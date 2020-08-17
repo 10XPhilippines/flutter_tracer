@@ -59,13 +59,6 @@ class _ProfileState extends State<Profile> {
                     hintText: "Enter full name",
                 ),
               ),
-              child: new TextField(
-                autofocus: true,
-                decoration: new InputDecoration(
-                    labelText: 'Full Name',
-                    hintText: "Enter full name",
-                ),
-              ),
             )
           ],
         ),
