@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurant_ui_kit/screens/cart.dart';
@@ -8,7 +10,7 @@ import 'package:restaurant_ui_kit/screens/profile.dart';
 import 'package:restaurant_ui_kit/screens/search.dart';
 import 'package:restaurant_ui_kit/util/const.dart';
 import 'package:restaurant_ui_kit/widgets/badge.dart';
-
+import 'package:qrscan/qrscan.dart' as scanner;
 
 class MainScreen extends StatefulWidget {
   @override
@@ -16,24 +18,31 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  Uint8List bytes = Uint8List(0);
+  TextEditingController _inputController;
+  TextEditingController _outputController;
   PageController _pageController;
   int _page = 0;
+
+  Future _scan() async {
+    String barcode = await scanner.scan();
+    this._outputController.text = barcode;
+  }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: ()=>Future.value(false),
+      onWillPop: () => Future.value(false),
       child: Scaffold(
         appBar: AppBar(
-          leading: Builder(
-            builder: (BuildContext context){
-              return IconButton(
-                icon: Icon(Icons.camera, size: 20.0),
-                onPressed: () {
-
-                },
-              );
-            }),
+          leading: Builder(builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(Icons.camera, size: 20.0),
+              onPressed: () {
+                _scan();
+              },
+            );
+          }),
           automaticallyImplyLeading: false,
           centerTitle: true,
           title: Text(
@@ -46,10 +55,10 @@ class _MainScreenState extends State<MainScreen> {
                 icon: Icons.notifications,
                 size: 22.0,
               ),
-              onPressed: (){
+              onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (BuildContext context){
+                    builder: (BuildContext context) {
                       return Notifications();
                     },
                   ),
@@ -65,9 +74,7 @@ class _MainScreenState extends State<MainScreen> {
           controller: _pageController,
           onPageChanged: onPageChanged,
           children: <Widget>[
-            
             Profile(),
-
             Home(),
             FavoriteScreen(),
             SearchScreen(),
@@ -80,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              SizedBox(width:7),
+              SizedBox(width: 7),
               // IconButton(
               //   icon: Icon(
               //     Icons.home,
@@ -141,13 +148,11 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 color: _page == 4
                     ? Theme.of(context).accentColor
-                    : Theme
-                    .of(context)
-                    .textTheme.caption.color,
-                onPressed: ()=>_pageController.jumpToPage(4),
+                    : Theme.of(context).textTheme.caption.color,
+                onPressed: () => _pageController.jumpToPage(4),
               ),
 
-              SizedBox(width:7),
+              SizedBox(width: 7),
             ],
           ),
           color: Theme.of(context).primaryColor,
@@ -163,7 +168,6 @@ class _MainScreenState extends State<MainScreen> {
         //   ),
         //   onPressed: ()=>_pageController.jumpToPage(2),
         // ),
-
       ),
     );
   }
