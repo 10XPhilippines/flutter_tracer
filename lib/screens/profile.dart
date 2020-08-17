@@ -44,36 +44,45 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-   _openPopup(context) {
-    Alert(
-        context: context,
-        title: "LOGIN",
-        content: Column(
+  _showDialog() async {
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
           children: <Widget>[
-            TextField(
-              decoration: InputDecoration(
-                icon: Icon(Icons.account_circle),
-                labelText: 'Username',
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                decoration: new InputDecoration(
+                    labelText: 'Full Name',
+                    hintText: "Enter full name",
+                ),
               ),
-            ),
-            TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                icon: Icon(Icons.lock),
-                labelText: 'Password',
+              child: new TextField(
+                autofocus: true,
+                decoration: new InputDecoration(
+                    labelText: 'Full Name',
+                    hintText: "Enter full name",
+                ),
               ),
-            ),
+            )
           ],
         ),
-        buttons: [
-          DialogButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              "LOGIN",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          )
-        ]).show();
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text('Save'),
+              onPressed: () {
+                Navigator.pop(context);
+              })
+        ],
+      ),
+    );
   }
 
   @override
@@ -186,7 +195,7 @@ class _ProfileState extends State<Profile> {
                   size: 20.0,
                 ),
                 onPressed: () {
-                  _openPopup(context);
+                  _showDialog();
                 },
                 tooltip: "Edit",
               ),
