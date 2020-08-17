@@ -10,7 +10,7 @@ import 'package:restaurant_ui_kit/screens/profile.dart';
 import 'package:restaurant_ui_kit/screens/search.dart';
 import 'package:restaurant_ui_kit/util/const.dart';
 import 'package:restaurant_ui_kit/widgets/badge.dart';
-import 'package:qrscan/qrscan.dart' as scanner;
+import 'package:restaurant_ui_kit/screens/questions.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -19,14 +19,13 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   Uint8List bytes = Uint8List(0);
-  TextEditingController _inputController;
-  TextEditingController _outputController;
   PageController _pageController;
   int _page = 0;
 
-  Future _scan() async {
-    String barcode = await scanner.scan();
-    this._outputController.text = barcode;
+  @override
+  initState() {
+    super.initState();
+    _pageController = PageController();
   }
 
   @override
@@ -39,7 +38,13 @@ class _MainScreenState extends State<MainScreen> {
             return IconButton(
               icon: Icon(Icons.camera, size: 20.0),
               onPressed: () {
-                _scan();
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return Questions();
+                    },
+                  ),
+                );
               },
             );
           }),
@@ -174,12 +179,6 @@ class _MainScreenState extends State<MainScreen> {
 
   void navigationTapped(int page) {
     _pageController.jumpToPage(page);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
   }
 
   @override
