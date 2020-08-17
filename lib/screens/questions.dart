@@ -15,7 +15,6 @@ class _QuestionsState extends State<Questions> {
   Map business = {};
   Map user = {};
   String data;
-  String business_data;
   String barcode = "";
 
   @override
@@ -38,7 +37,7 @@ class _QuestionsState extends State<Questions> {
     _getBusiness();
   }
 
-  void _getBusiness() async {
+  _getBusiness() async {
     String url = '/business/' + barcode + '/' + profile["id"].toString();
     print("GET: " + url);
     var res = await Network().getData(url);
@@ -48,7 +47,7 @@ class _QuestionsState extends State<Questions> {
         business = body;
       });
     }
-    print(body);
+    print(business);
   }
 
   @override
@@ -73,8 +72,21 @@ class _QuestionsState extends State<Questions> {
         child: ListView(
           shrinkWrap: true,
           children: <Widget>[
-            SizedBox(height: 30.0),
-
+            Container(
+              alignment: Alignment.topLeft,
+              margin: EdgeInsets.only(
+                top: 25.0,
+              ),
+              child: Text(
+                business["business_name"] ?? "Business",
+                style: TextStyle(
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).accentColor,
+                ),
+              ),
+            ),
+            SizedBox(height: 10.0),
             Card(
               elevation: 3.0,
               child: Container(
@@ -90,7 +102,7 @@ class _QuestionsState extends State<Questions> {
                     color: Colors.black,
                   ),
                   decoration: InputDecoration(
-                    labelText: "Email",
+                    labelText: profile["name"] ?? "Name",
                     contentPadding: EdgeInsets.all(10.0),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
@@ -104,15 +116,15 @@ class _QuestionsState extends State<Questions> {
                       ),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
-                    hintText: "Email",
+                    hintText: "Name",
                     hintStyle: TextStyle(
                       fontSize: 15.0,
                       color: Colors.black,
                     ),
-                    prefixIcon: Icon(
-                      Icons.perm_identity,
-                      color: Colors.black,
-                    ),
+                    // prefixIcon: Icon(
+                    //   Icons.perm_identity,
+                    //   color: Colors.black,
+                    // ),
                   ),
                   maxLines: 1,
                   onChanged: (value) {},
@@ -137,7 +149,7 @@ class _QuestionsState extends State<Questions> {
                     color: Colors.black,
                   ),
                   decoration: InputDecoration(
-                    labelText: "Password",
+                    labelText: profile["phone"] ?? "Contact number",
                     contentPadding: EdgeInsets.all(10.0),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
@@ -151,11 +163,11 @@ class _QuestionsState extends State<Questions> {
                       ),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
-                    hintText: "Password",
-                    prefixIcon: Icon(
-                      Icons.lock_outline,
-                      color: Colors.black,
-                    ),
+                    hintText: "Contact number",
+                    // prefixIcon: Icon(
+                    //   Icons.call,
+                    //   color: Colors.black,
+                    // ),
                     hintStyle: TextStyle(
                       fontSize: 15.0,
                       color: Colors.black,
@@ -174,7 +186,7 @@ class _QuestionsState extends State<Questions> {
               alignment: Alignment.centerRight,
               child: FlatButton(
                 child: Text(
-                  "Forgot Password?",
+                  "Submit answers",
                   style: TextStyle(
                     fontSize: 14.0,
                     fontWeight: FontWeight.w500,
@@ -187,27 +199,27 @@ class _QuestionsState extends State<Questions> {
 
             SizedBox(height: 30.0),
 
-            Container(
-              height: 50.0,
-              child: RaisedButton(
-                child: Text(
-                  barcode,
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                onPressed: () {
-                  _getBusiness();
-                },
-                color: Theme.of(context).accentColor,
-              ),
-            ),
+            // Container(
+            //   height: 50.0,
+            //   child: RaisedButton(
+            //     child: Text(
+            //       barcode,
+            //       style: TextStyle(
+            //         color: Colors.white,
+            //       ),
+            //     ),
+            //     onPressed: () {
+            //       _getBusiness();
+            //     },
+            //     color: Theme.of(context).accentColor,
+            //   ),
+            // ),
 
             SizedBox(height: 10.0),
-            Divider(
-              color: Theme.of(context).accentColor,
-            ),
-            SizedBox(height: 10.0),
+            // Divider(
+            //   color: Theme.of(context).accentColor,
+            // ),
+            // SizedBox(height: 10.0),
 
             // Center(
             //   child: Container(
