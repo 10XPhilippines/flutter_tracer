@@ -8,6 +8,7 @@ import 'package:restaurant_ui_kit/screens/login.dart';
 import 'package:restaurant_ui_kit/util/const.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:restaurant_ui_kit/network_utils/api.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -41,6 +42,38 @@ class _ProfileState extends State<Profile> {
         ),
       );
     }
+  }
+
+   _openPopup(context) {
+    Alert(
+        context: context,
+        title: "LOGIN",
+        content: Column(
+          children: <Widget>[
+            TextField(
+              decoration: InputDecoration(
+                icon: Icon(Icons.account_circle),
+                labelText: 'Username',
+              ),
+            ),
+            TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                icon: Icon(Icons.lock),
+                labelText: 'Password',
+              ),
+            ),
+          ],
+        ),
+        buttons: [
+          DialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "LOGIN",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ]).show();
   }
 
   @override
@@ -152,7 +185,9 @@ class _ProfileState extends State<Profile> {
                   Icons.edit,
                   size: 20.0,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  _openPopup(context);
+                },
                 tooltip: "Edit",
               ),
             ),

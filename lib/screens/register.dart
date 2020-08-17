@@ -48,7 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("Error"),
+              title: Text("Failed"),
               content: Text("Please correct the following inputs."),
             );
           });
@@ -93,6 +93,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   color: Colors.black,
                 ),
                 decoration: InputDecoration(
+                  labelText: "Name",
                   contentPadding: EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -140,6 +141,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   color: Colors.black,
                 ),
                 decoration: InputDecoration(
+                  labelText: "Phone Number",
+                  alignLabelWithHint: true,
                   contentPadding: EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -153,7 +156,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  hintText: "Phone Number",
+                  hintText: "Must include country code",
                   prefixIcon: Icon(
                     Icons.call,
                     color: Colors.black,
@@ -187,6 +190,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   color: Colors.black,
                 ),
                 decoration: InputDecoration(
+                  labelText: "Email",
+                  alignLabelWithHint: true,
                   contentPadding: EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -200,7 +205,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  hintText: "Email",
+                  hintText: "Must be a valid email address",
                   prefixIcon: Icon(
                     Icons.mail_outline,
                     color: Colors.black,
@@ -234,6 +239,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   color: Colors.black,
                 ),
                 decoration: InputDecoration(
+                  labelText: "Password",
                   contentPadding: EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),

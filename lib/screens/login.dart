@@ -69,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: Colors.black,
                 ),
                 decoration: InputDecoration(
+                  labelText: "Email",
                   contentPadding: EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -118,6 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: Colors.black,
                 ),
                 decoration: InputDecoration(
+                  labelText: "Password",
                   contentPadding: EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -252,6 +254,7 @@ class _LoginScreenState extends State<LoginScreen> {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', json.encode(body['token']));
       localStorage.setString('user', json.encode(body['user']));
+
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (BuildContext context) {
@@ -260,7 +263,14 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     } else {
-      _showMsg(body['message']);
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Failed"),
+              content: Text("No matching records found."),
+            );
+          });
     }
 
     setState(() {
