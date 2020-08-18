@@ -32,6 +32,40 @@ class _LoginScreenState extends State<LoginScreen> {
         child: FutureProgressDialog(getFuture(), message: Text('Loading...')));
   }
 
+_showDialog() async {
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                decoration: new InputDecoration(
+                  labelText: 'Reset Password',
+                  hintText: "Enter your email",
+                ),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text('Submit'),
+              onPressed: () {
+                Navigator.pop(context);
+              })
+        ],
+      ),
+    );
+  }
+
   _checkIfConnected() async {
     try {
       final result = await InternetAddress.lookup('google.com');
@@ -201,7 +235,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: Theme.of(context).accentColor,
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                _showDialog();
+              },
             ),
           ),
 

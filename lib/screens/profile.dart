@@ -178,7 +178,7 @@ class _ProfileState extends State<Profile> {
                                           "You are about to logout."),
                                       actions: <Widget>[
                                         new FlatButton(
-                                            child: const Text('Back'),
+                                            child: const Text('Cancel'),
                                             onPressed: () {
                                               Navigator.pop(context);
                                             }),

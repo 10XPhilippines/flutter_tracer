@@ -19,7 +19,7 @@ class _QuestionsState extends State<Questions> {
   Map user = {};
   String data;
   String barcode = "";
-  String businessName = "Business";
+  String businessName = "No scanned code yet";
   String businessId = "";
   String userId = "";
   String dateEntry = "";
@@ -46,6 +46,26 @@ class _QuestionsState extends State<Questions> {
   ];
 
   DateTime now = DateTime.now();
+
+  _checkIfScanned() {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Scan"),
+            content: Text("Scan a business QR Code first."),
+            actions: <Widget>[
+              new FlatButton(
+                  child: const Text('Scan'),
+                  onPressed: () {
+                    _scan();
+                    Navigator.pop(context);
+                  })
+            ],
+          );
+        });
+  }
 
   _checkIfConnected() async {
     try {
@@ -92,6 +112,7 @@ class _QuestionsState extends State<Questions> {
   Future _scan() async {
     String barcode = await scanner.scan();
     setState(() => this.barcode = barcode);
+    print(barcode);
     _getBusiness();
   }
 
@@ -118,6 +139,7 @@ class _QuestionsState extends State<Questions> {
   }
 
   void _postTrace() async {
+    _checkIfConnected();
     var traceData = {
       'user_id': userId,
       'business_id': businessId,
@@ -621,7 +643,7 @@ class _QuestionsState extends State<Questions> {
                 left: 10.0,
               ),
               child: Text(
-                "Questions",
+                "Required Questions",
                 style: TextStyle(
                   fontSize: 15.0,
                   fontWeight: FontWeight.w500,
@@ -737,8 +759,13 @@ class _QuestionsState extends State<Questions> {
                     new FlatButton(
                         child: const Text('Submit'),
                         onPressed: () {
-                          _postTrace();
-                          Navigator.pop(context);
+                          if (barcode.isEmpty) {
+                            Navigator.pop(context);
+                            _checkIfScanned();
+                          } else {
+                            Navigator.pop(context);
+                            _postTrace();
+                          }
                         })
                   ],
                 );
