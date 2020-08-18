@@ -16,6 +16,8 @@ class _QuestionsState extends State<Questions> {
   Map user = {};
   String data;
   String barcode = "";
+  String dateEntry = "";
+  String dateExit = "";
 
   @override
   void initState() {
@@ -75,7 +77,7 @@ class _QuestionsState extends State<Questions> {
             Container(
               alignment: Alignment.topLeft,
               margin: EdgeInsets.only(
-                top: 25.0,
+                top: 25.0, left: 10.0
               ),
               child: Text(
                 business["business_name"] ?? "Business",
@@ -116,7 +118,7 @@ class _QuestionsState extends State<Questions> {
                       ),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
-                    hintText: "Name",
+                    hintText: "Enter your name",
                     hintStyle: TextStyle(
                       fontSize: 15.0,
                       color: Colors.black,
@@ -149,7 +151,7 @@ class _QuestionsState extends State<Questions> {
                     color: Colors.black,
                   ),
                   decoration: InputDecoration(
-                    labelText: profile["phone"] ?? "Contact number",
+                    labelText: profile["email"] ?? "Email Address",
                     contentPadding: EdgeInsets.all(10.0),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
@@ -163,7 +165,7 @@ class _QuestionsState extends State<Questions> {
                       ),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
-                    hintText: "Contact number",
+                    hintText: "Enter your email",
                     // prefixIcon: Icon(
                     //   Icons.call,
                     //   color: Colors.black,
@@ -181,6 +183,310 @@ class _QuestionsState extends State<Questions> {
             ),
 
             SizedBox(height: 10.0),
+
+            Card(
+              elevation: 3.0,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(5.0),
+                  ),
+                ),
+                child: TextField(
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    color: Colors.black,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: profile["phone"] ?? "Phone Number",
+                    contentPadding: EdgeInsets.all(10.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                      ),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    hintText: "Enter your phone number",
+                    // prefixIcon: Icon(
+                    //   Icons.call,
+                    //   color: Colors.black,
+                    // ),
+                    hintStyle: TextStyle(
+                      fontSize: 15.0,
+                      color: Colors.black,
+                    ),
+                  ),
+                  obscureText: true,
+                  maxLines: 1,
+                  onChanged: (value) {},
+                ),
+              ),
+            ),
+
+            SizedBox(height: 10.0),
+
+            Card(
+              elevation: 3.0,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(5.0),
+                  ),
+                ),
+                child: TextField(
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    color: Colors.black,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: "Street (Optional)",
+                    contentPadding: EdgeInsets.all(10.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                      ),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    hintText: "Enter your street number",
+                    // prefixIcon: Icon(
+                    //   Icons.call,
+                    //   color: Colors.black,
+                    // ),
+                    hintStyle: TextStyle(
+                      fontSize: 15.0,
+                      color: Colors.black,
+                    ),
+                  ),
+                  obscureText: true,
+                  maxLines: 1,
+                  onChanged: (value) {},
+                ),
+              ),
+            ),
+
+            SizedBox(height: 10.0),
+
+            Card(
+              elevation: 3.0,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(5.0),
+                  ),
+                ),
+                child: TextField(
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    color: Colors.black,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: "Barangay",
+                    contentPadding: EdgeInsets.all(10.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                      ),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    hintText: "Enter your barangay",
+                    // prefixIcon: Icon(
+                    //   Icons.call,
+                    //   color: Colors.black,
+                    // ),
+                    hintStyle: TextStyle(
+                      fontSize: 15.0,
+                      color: Colors.black,
+                    ),
+                  ),
+                  obscureText: true,
+                  maxLines: 1,
+                  onChanged: (value) {},
+                ),
+              ),
+            ),
+
+            SizedBox(height: 10.0),
+
+            Card(
+              elevation: 3.0,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(5.0),
+                  ),
+                ),
+                child: TextField(
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    color: Colors.black,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: "Municipality",
+                    contentPadding: EdgeInsets.all(10.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                      ),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    hintText: "Enter your municipality",
+                    // prefixIcon: Icon(
+                    //   Icons.call,
+                    //   color: Colors.black,
+                    // ),
+                    hintStyle: TextStyle(
+                      fontSize: 15.0,
+                      color: Colors.black,
+                    ),
+                  ),
+                  obscureText: true,
+                  maxLines: 1,
+                  onChanged: (value) {},
+                ),
+              ),
+            ),
+
+            SizedBox(height: 10.0),
+
+            Card(
+              elevation: 3.0,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(5.0),
+                  ),
+                ),
+                child: TextField(
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    color: Colors.black,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: "Province",
+                    contentPadding: EdgeInsets.all(10.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                      ),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    hintText: "Enter your province",
+                    // prefixIcon: Icon(
+                    //   Icons.call,
+                    //   color: Colors.black,
+                    // ),
+                    hintStyle: TextStyle(
+                      fontSize: 15.0,
+                      color: Colors.black,
+                    ),
+                  ),
+                  obscureText: true,
+                  maxLines: 1,
+                  onChanged: (value) {},
+                ),
+              ),
+            ),
+
+            SizedBox(height: 10.0),
+
+            Card(
+              elevation: 3.0,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(5.0),
+                  ),
+                ),
+                child: TextField(
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    color: Colors.black,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: "Facebook (Optional)",
+                    contentPadding: EdgeInsets.all(10.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                      ),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    hintText: "Enter your facebook link",
+                    // prefixIcon: Icon(
+                    //   Icons.call,
+                    //   color: Colors.black,
+                    // ),
+                    hintStyle: TextStyle(
+                      fontSize: 15.0,
+                      color: Colors.black,
+                    ),
+                  ),
+                  obscureText: true,
+                  maxLines: 1,
+                  onChanged: (value) {},
+                ),
+              ),
+            ),
+
+            SizedBox(height: 10.0),
+
+            Container(
+              alignment: Alignment.topLeft,
+              margin: EdgeInsets.only(
+                top: 25.0, left: 10.0,
+              ),
+              child: Text(
+                "Questions",
+                style: TextStyle(
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).accentColor,
+                ),
+              ),
+            ),
+            
 
             Container(
               alignment: Alignment.centerRight,

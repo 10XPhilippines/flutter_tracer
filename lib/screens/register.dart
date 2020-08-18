@@ -289,11 +289,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
           SizedBox(height: 10.0),
-          Divider(
-            color: Theme.of(context).accentColor,
-          ),
-          SizedBox(height: 10.0),
-          SizedBox(height: 20.0),
+          // Divider(
+          //   color: Theme.of(context).accentColor,
+          // ),
+          // SizedBox(height: 10.0),
+          // SizedBox(height: 20.0),
         ],
       ),
     );

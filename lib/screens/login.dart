@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:restaurant_ui_kit/screens/main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:restaurant_ui_kit/network_utils/api.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+
+ProgressDialog pr;
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -15,22 +18,14 @@ class _LoginScreenState extends State<LoginScreen> {
   var email;
   var password;
   bool _isLoading = false;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  _showMsg(msg) {
-    final snackBar = SnackBar(
-      content: Text(msg),
-      action: SnackBarAction(
-        label: 'Close',
-        onPressed: () {
-          // Some code to undo the change!
-        },
-      ),
-    );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
-  }
 
   @override
   Widget build(BuildContext context) {
+    pr = ProgressDialog(
+      context,
+      type: ProgressDialogType.Normal,
+      isDismissible: true,
+    );
     return Padding(
       padding: EdgeInsets.fromLTRB(20.0, 0, 20, 0),
       child: ListView(
@@ -88,10 +83,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     fontSize: 15.0,
                     color: Colors.black,
                   ),
-                  prefixIcon: Icon(
-                    Icons.perm_identity,
-                    color: Colors.black,
-                  ),
+                  // prefixIcon: Icon(
+                  //   Icons.perm_identity,
+                  //   color: Colors.black,
+                  // ),
                 ),
                 maxLines: 1,
                 controller: _usernameControl,
@@ -134,10 +129,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   hintText: "Password",
-                  prefixIcon: Icon(
-                    Icons.lock_outline,
-                    color: Colors.black,
-                  ),
+                  // prefixIcon: Icon(
+                  //   Icons.lock_outline,
+                  //   color: Colors.black,
+                  // ),
                   hintStyle: TextStyle(
                     fontSize: 15.0,
                     color: Colors.black,
@@ -181,18 +176,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: Colors.white,
                 ),
               ),
-              onPressed: () {
+              onPressed: () async {
                 _login();
+                await pr.show();
               },
               color: Theme.of(context).accentColor,
             ),
           ),
 
           SizedBox(height: 10.0),
-          Divider(
-            color: Theme.of(context).accentColor,
-          ),
-          SizedBox(height: 10.0),
+          // Divider(
+          //   color: Theme.of(context).accentColor,
+          // ),
+          // SizedBox(height: 10.0),
 
           // Center(
           //   child: Container(
@@ -264,11 +260,22 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } else {
       showDialog(
+          barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("Failed"),
-              content: Text("No matching records found."),
+              content: Text("Error signing in. Try again."),
+              actions: <Widget>[
+                new FlatButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      pr.hide().then((isHidden) {
+                        print(isHidden);
+                      });
+                      Navigator.pop(context);
+                    })
+              ],
             );
           });
     }
