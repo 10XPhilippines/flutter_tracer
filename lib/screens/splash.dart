@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
               //   color: Theme.of(context).accentColor,
               // ),
 
-              Image.asset('assets/logo.png'),
+              Image.asset('assets/logo.png', width: 100,),
 
               SizedBox(width: 40.0),
 

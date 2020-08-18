@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -44,6 +45,33 @@ class _ProfileState extends State<Profile> {
     }
   }
 
+  _checkIfConnected() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print('connected');
+        getProfile();
+      }
+    } on SocketException catch (_) {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Network"),
+              content: Text("You are not connected to the internet."),
+              actions: <Widget>[
+                new FlatButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    })
+              ],
+            );
+          });
+    }
+  }
+
   _showDialog() async {
     await showDialog<String>(
       context: context,
@@ -55,8 +83,8 @@ class _ProfileState extends State<Profile> {
               child: new TextField(
                 autofocus: true,
                 decoration: new InputDecoration(
-                    labelText: 'Full Name',
-                    hintText: "Enter full name",
+                  labelText: 'Full Name',
+                  hintText: "Enter full name",
                 ),
               ),
             )
@@ -81,6 +109,7 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     getProfile();
+    _checkIfConnected();
     super.initState();
   }
 
@@ -139,7 +168,28 @@ class _ProfileState extends State<Profile> {
                         children: <Widget>[
                           InkWell(
                             onTap: () {
-                              logout();
+                              showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("Logout"),
+                                      content: Text(
+                                          "You are about to logout."),
+                                      actions: <Widget>[
+                                        new FlatButton(
+                                            child: const Text('Back'),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            }),
+                                        new FlatButton(
+                                            child: const Text('Logout'),
+                                            onPressed: () {
+                                              logout();
+                                            })
+                                      ],
+                                    );
+                                  });
                             },
                             child: Text(
                               "Logout",

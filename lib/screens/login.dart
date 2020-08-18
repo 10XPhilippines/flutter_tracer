@@ -1,11 +1,11 @@
+import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:restaurant_ui_kit/screens/main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:restaurant_ui_kit/network_utils/api.dart';
-import 'package:progress_dialog/progress_dialog.dart';
-
-ProgressDialog pr;
+import 'package:future_progress_dialog/future_progress_dialog.dart';
+import 'package:restaurant_ui_kit/util/network.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -19,13 +19,53 @@ class _LoginScreenState extends State<LoginScreen> {
   var password;
   bool _isLoading = false;
 
+  Future getFuture() {
+    return Future(() async {
+      await Future.delayed(Duration(seconds: 2));
+      return 'Hello, Future Progress Dialog!';
+    });
+  }
+
+  Future<void> showProgress(BuildContext context) async {
+    await showDialog(
+        context: context,
+        child: FutureProgressDialog(getFuture(), message: Text('Loading...')));
+  }
+
+  _checkIfConnected() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print('connected');
+      }
+    } on SocketException catch (_) {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Network"),
+              content: Text("You are not connected to the internet."),
+              actions: <Widget>[
+                new FlatButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    })
+              ],
+            );
+          });
+    }
+  }
+
+  @override
+  void initState() {
+    _checkIfConnected();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    pr = ProgressDialog(
-      context,
-      type: ProgressDialogType.Normal,
-      isDismissible: true,
-    );
     return Padding(
       padding: EdgeInsets.fromLTRB(20.0, 0, 20, 0),
       child: ListView(
@@ -250,7 +290,6 @@ class _LoginScreenState extends State<LoginScreen> {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', json.encode(body['token']));
       localStorage.setString('user', json.encode(body['user']));
-
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (BuildContext context) {
@@ -259,6 +298,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     } else {
+      showProgress(context);
       showDialog(
           barrierDismissible: false,
           context: context,
@@ -270,9 +310,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 new FlatButton(
                     child: const Text('OK'),
                     onPressed: () {
-                      pr.hide().then((isHidden) {
-                        print(isHidden);
-                      });
                       Navigator.pop(context);
                     })
               ],
