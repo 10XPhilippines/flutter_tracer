@@ -276,7 +276,7 @@ class _QuestionsState extends State<Questions> {
                       ),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
-                    hintText: "Enter your street number",
+                    hintText: "Enter your street",
                     // prefixIcon: Icon(
                     //   Icons.call,
                     //   color: Colors.black,

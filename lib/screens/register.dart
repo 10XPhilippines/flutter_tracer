@@ -107,11 +107,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  hintText: "Name",
-                  prefixIcon: Icon(
-                    Icons.perm_identity,
-                    color: Colors.black,
-                  ),
+                  hintText: "Enter your name",
+                  // prefixIcon: Icon(
+                  //   Icons.perm_identity,
+                  //   color: Colors.black,
+                  // ),
                   hintStyle: TextStyle(
                     fontSize: 15.0,
                     color: Colors.black,
@@ -157,10 +157,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   hintText: "Must include country code",
-                  prefixIcon: Icon(
-                    Icons.call,
-                    color: Colors.black,
-                  ),
+                  // prefixIcon: Icon(
+                  //   Icons.call,
+                  //   color: Colors.black,
+                  // ),
                   hintStyle: TextStyle(
                     fontSize: 15.0,
                     color: Colors.black,
@@ -206,10 +206,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   hintText: "Must be a valid email address",
-                  prefixIcon: Icon(
-                    Icons.mail_outline,
-                    color: Colors.black,
-                  ),
+                  // prefixIcon: Icon(
+                  //   Icons.mail_outline,
+                  //   color: Colors.black,
+                  // ),
                   hintStyle: TextStyle(
                     fontSize: 15.0,
                     color: Colors.black,
@@ -253,11 +253,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  hintText: "Password",
-                  prefixIcon: Icon(
-                    Icons.lock_outline,
-                    color: Colors.black,
-                  ),
+                  hintText: "Enter your password",
+                  // prefixIcon: Icon(
+                  //   Icons.lock_outline,
+                  //   color: Colors.black,
+                  // ),
                   hintStyle: TextStyle(
                     fontSize: 15.0,
                     color: Colors.black,

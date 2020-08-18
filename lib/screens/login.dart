@@ -178,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               onPressed: () async {
                 _login();
-                await pr.show();
+                // await pr.show();
               },
               color: Theme.of(context).accentColor,
             ),
