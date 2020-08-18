@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:restaurant_ui_kit/network_utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smart_select/smart_select.dart';
 
 class Questions extends StatefulWidget {
   @override
@@ -16,12 +17,26 @@ class _QuestionsState extends State<Questions> {
   Map user = {};
   String data;
   String barcode = "";
+  String businessName = "Business";
   String dateEntry = "";
   String dateExit = "";
+  String soreThroat = "No";
+  String headAche = "No";
+  String fever = "No";
+  String cough = "No";
+  String exposure = "No";
+  String travelHistory = "No";
+  String bodyPain = "No";
+
+  List<SmartSelectOption<String>> options = [
+    SmartSelectOption<String>(value: 'No', title: 'No'),
+    SmartSelectOption<String>(value: 'Yes', title: 'Yes'),
+  ];
 
   @override
   void initState() {
     getProfile();
+    _scan();
     super.initState();
   }
 
@@ -47,9 +62,11 @@ class _QuestionsState extends State<Questions> {
     if (body['success']) {
       setState(() {
         business = body;
+        businessName = business["business"]["business_name"];
       });
     }
     print(business);
+    print(business["business"]["business_name"]);
   }
 
   @override
@@ -76,11 +93,9 @@ class _QuestionsState extends State<Questions> {
           children: <Widget>[
             Container(
               alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(
-                top: 25.0, left: 10.0
-              ),
+              margin: EdgeInsets.only(top: 25.0, left: 10.0),
               child: Text(
-                business["business_name"] ?? "Business",
+                businessName,
                 style: TextStyle(
                   fontSize: 15.0,
                   fontWeight: FontWeight.w500,
@@ -475,7 +490,8 @@ class _QuestionsState extends State<Questions> {
             Container(
               alignment: Alignment.topLeft,
               margin: EdgeInsets.only(
-                top: 25.0, left: 10.0,
+                top: 25.0,
+                left: 10.0,
               ),
               child: Text(
                 "Questions",
@@ -486,96 +502,111 @@ class _QuestionsState extends State<Questions> {
                 ),
               ),
             ),
-            
-
-            Container(
-              alignment: Alignment.centerRight,
-              child: FlatButton(
-                child: Text(
-                  "Submit answers",
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w500,
-                    color: Theme.of(context).accentColor,
-                  ),
-                ),
-                onPressed: () {},
-              ),
-            ),
-
-            SizedBox(height: 30.0),
-
-            // Container(
-            //   height: 50.0,
-            //   child: RaisedButton(
-            //     child: Text(
-            //       barcode,
-            //       style: TextStyle(
-            //         color: Colors.white,
-            //       ),
-            //     ),
-            //     onPressed: () {
-            //       _getBusiness();
-            //     },
-            //     color: Theme.of(context).accentColor,
-            //   ),
-            // ),
 
             SizedBox(height: 10.0),
-            // Divider(
-            //   color: Theme.of(context).accentColor,
-            // ),
-            // SizedBox(height: 10.0),
 
-            // Center(
-            //   child: Container(
-            //     width: MediaQuery.of(context).size.width/2,
-            //     child: Row(
-            //       children: <Widget>[
-            //         RawMaterialButton(
-            //           onPressed: (){},
-            //           fillColor: Colors.blue[800],
-            //           shape: CircleBorder(),
-            //           elevation: 4.0,
-            //           child: Padding(
-            //             padding: EdgeInsets.all(15),
-            //             child: Icon(
-            //               FontAwesomeIcons.facebookF,
-            //               color: Colors.white,
-            //               //size: 24.0,
-            //             ),
-            //           ),
-            //         ),
+            SmartSelect<String>.single(
+              title: 'Do you have sore throat?',
+              value: soreThroat,
+              options: options,
+              modalType: SmartSelectModalType.bottomSheet,
+              choiceType: SmartSelectChoiceType.radios,
+              onChange: (val) => setState(() => soreThroat = val)
+            ),
 
-            //         RawMaterialButton(
-            //           onPressed: (){},
-            //           fillColor: Colors.white,
-            //           shape: CircleBorder(),
-            //           elevation: 4.0,
-            //           child: Padding(
-            //             padding: EdgeInsets.all(15),
-            //             child: Icon(
-            //               FontAwesomeIcons.google,
-            //               color: Colors.blue[800],
-            //               //size: 24.0,
-            //             ),
-            //           ),
-            //         ),
-            //       ],
+            SizedBox(height: 10.0),
+
+            SmartSelect<String>.single(
+              title: 'Do you have headache?',
+              value: headAche,
+              options: options,
+              modalType: SmartSelectModalType.bottomSheet,
+              choiceType: SmartSelectChoiceType.radios,
+              onChange: (val) => setState(() => headAche = val)
+            ),
+
+            SizedBox(height: 10.0),
+
+            SmartSelect<String>.single(
+              title: 'Do you have fever?',
+              value: fever,
+              options: options,
+              modalType: SmartSelectModalType.bottomSheet,
+              choiceType: SmartSelectChoiceType.radios,
+              onChange: (val) => setState(() => fever = val)
+            ),
+
+            SizedBox(height: 10.0),
+
+            SmartSelect<String>.single(
+              title: 'Do you have travel history?',
+              value: travelHistory,
+              options: options,
+              modalType: SmartSelectModalType.bottomSheet,
+              choiceType: SmartSelectChoiceType.radios,
+              onChange: (val) => setState(() => travelHistory = val)
+            ),
+
+            SizedBox(height: 10.0),
+
+            SmartSelect<String>.single(
+              title: 'Do you have exposure?',
+              value: exposure,
+              options: options,
+              modalType: SmartSelectModalType.bottomSheet,
+              choiceType: SmartSelectChoiceType.radios,
+              onChange: (val) => setState(() => exposure = val)
+            ),
+
+            SizedBox(height: 10.0),
+
+            SmartSelect<String>.single(
+              title: 'Do you have cough or colds?',
+              value: cough,
+              options: options,
+              modalType: SmartSelectModalType.bottomSheet,
+              choiceType: SmartSelectChoiceType.radios,
+              onChange: (val) => setState(() => cough = val)
+            ),
+
+            SizedBox(height: 10.0),
+
+            SmartSelect<String>.single(
+              title: 'Do you have body pain?',
+              value: bodyPain,
+              options: options,
+              modalType: SmartSelectModalType.bottomSheet,
+              choiceType: SmartSelectChoiceType.radios,
+              onChange: (val) => setState(() => bodyPain = val)
+            ),
+
+            // Container(
+            //   alignment: Alignment.centerRight,
+            //   child: FlatButton(
+            //     child: Text(
+            //       "Submit answers",
+            //       style: TextStyle(
+            //         fontSize: 14.0,
+            //         fontWeight: FontWeight.w500,
+            //         color: Theme.of(context).accentColor,
+            //       ),
             //     ),
+            //     onPressed: () {},
             //   ),
             // ),
 
-            SizedBox(height: 20.0),
+            SizedBox(height: 80.0),
+
+      
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          _scan();
+          
         },
-        label: Text('Scan Now'),
-        icon: Icon(Icons.camera),
+        label: Text('Submit'),
+        icon: Icon(Icons.check_circle),
         backgroundColor: Colors.pink,
       ),
     );
