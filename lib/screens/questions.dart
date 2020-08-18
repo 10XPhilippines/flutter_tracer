@@ -1,10 +1,11 @@
 import 'dart:convert';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:restaurant_ui_kit/network_utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_select/smart_select.dart';
+import 'package:restaurant_ui_kit/screens/main_screen.dart';
 
 class Questions extends StatefulWidget {
   @override
@@ -18,20 +19,32 @@ class _QuestionsState extends State<Questions> {
   String data;
   String barcode = "";
   String businessName = "Business";
+  String businessId = "";
+  String userId = "";
   String dateEntry = "";
   String dateExit = "";
-  String soreThroat = "No";
-  String headAche = "No";
-  String fever = "No";
-  String cough = "No";
-  String exposure = "No";
-  String travelHistory = "No";
-  String bodyPain = "No";
+  String soreThroat = "";
+  String headAche = "";
+  String fever = "";
+  String cough = "";
+  String exposure = "";
+  String travelHistory = "";
+  String bodyPain = "";
+  var name;
+  var email;
+  var phoneNumber;
+  var street;
+  var barangay;
+  var municipality;
+  var province;
+  var facebook;
 
   List<SmartSelectOption<String>> options = [
-    SmartSelectOption<String>(value: 'No', title: 'No'),
     SmartSelectOption<String>(value: 'Yes', title: 'Yes'),
+    SmartSelectOption<String>(value: 'No', title: 'No'),
   ];
+
+  DateTime now = DateTime.now();
 
   @override
   void initState() {
@@ -63,10 +76,85 @@ class _QuestionsState extends State<Questions> {
       setState(() {
         business = body;
         businessName = business["business"]["business_name"];
+        dateEntry = DateFormat('yyyy-MM-dd kk:mm:ss').format(now);
+        businessId = business["business"]["id"].toString();
+        userId = business["user"]["id"].toString();
+        name = profile["name"];
+        email = profile["email"];
+        phoneNumber = profile["phone"];
       });
     }
-    print(business);
-    print(business["business"]["business_name"]);
+    print(businessId);
+    print(dateEntry);
+    print(userId);
+  }
+
+  void _postTrace() async {
+    var traceData = {
+      'user_id': userId,
+      'business_id': businessId,
+      'trace_name': name,
+      'trace_contact_number': phoneNumber,
+      'trace_street': street,
+      'trace_barangay': barangay,
+      'trace_municipality': municipality,
+      'trace_province': province,
+      'trace_facebook_link': facebook,
+      'trace_email': email,
+      'trace_date_time_entry': dateEntry,
+      'trace_question_sore_throat': soreThroat,
+      'trace_question_headache': headAche,
+      'trace_question_fever': fever,
+      'trace_question_travel_history': travelHistory,
+      'trace_question_exposure': exposure,
+      'trace_question_cough_cold': cough,
+      'trace_question_body_pain': bodyPain,
+    };
+    print(traceData);
+
+    var response = await Network().authData(traceData, '/tracer');
+    var body = json.decode(response.body);
+    if (body['success']) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Thanks"),
+              content:
+                  Text("Survey submitted. Thank you for your cooperation!"),
+              actions: <Widget>[
+                new FlatButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return MainScreen();
+                          },
+                        ),
+                      );
+                    }),
+              ],
+            );
+          });
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Failed"),
+              content: Text("Please correct the following error."),
+              actions: <Widget>[
+                new FlatButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }),
+              ],
+            );
+          });
+      print(body);
+    }
   }
 
   @override
@@ -144,7 +232,9 @@ class _QuestionsState extends State<Questions> {
                     // ),
                   ),
                   maxLines: 1,
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    name = value;
+                  },
                 ),
               ),
             ),
@@ -190,9 +280,10 @@ class _QuestionsState extends State<Questions> {
                       color: Colors.black,
                     ),
                   ),
-                  obscureText: true,
                   maxLines: 1,
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    email = value;
+                  },
                 ),
               ),
             ),
@@ -238,9 +329,10 @@ class _QuestionsState extends State<Questions> {
                       color: Colors.black,
                     ),
                   ),
-                  obscureText: true,
                   maxLines: 1,
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    phoneNumber = value;
+                  },
                 ),
               ),
             ),
@@ -262,7 +354,7 @@ class _QuestionsState extends State<Questions> {
                     color: Colors.black,
                   ),
                   decoration: InputDecoration(
-                    labelText: "Street (Optional)",
+                    labelText: "Street",
                     contentPadding: EdgeInsets.all(10.0),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
@@ -286,9 +378,10 @@ class _QuestionsState extends State<Questions> {
                       color: Colors.black,
                     ),
                   ),
-                  obscureText: true,
                   maxLines: 1,
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    street = value;
+                  },
                 ),
               ),
             ),
@@ -334,9 +427,10 @@ class _QuestionsState extends State<Questions> {
                       color: Colors.black,
                     ),
                   ),
-                  obscureText: true,
                   maxLines: 1,
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    barangay = value;
+                  },
                 ),
               ),
             ),
@@ -382,9 +476,10 @@ class _QuestionsState extends State<Questions> {
                       color: Colors.black,
                     ),
                   ),
-                  obscureText: true,
                   maxLines: 1,
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    municipality = value;
+                  },
                 ),
               ),
             ),
@@ -430,9 +525,10 @@ class _QuestionsState extends State<Questions> {
                       color: Colors.black,
                     ),
                   ),
-                  obscureText: true,
                   maxLines: 1,
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    province = value;
+                  },
                 ),
               ),
             ),
@@ -478,9 +574,10 @@ class _QuestionsState extends State<Questions> {
                       color: Colors.black,
                     ),
                   ),
-                  obscureText: true,
                   maxLines: 1,
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    facebook = value;
+                  },
                 ),
               ),
             ),
@@ -506,79 +603,72 @@ class _QuestionsState extends State<Questions> {
             SizedBox(height: 10.0),
 
             SmartSelect<String>.single(
-              title: 'Do you have sore throat?',
-              value: soreThroat,
-              options: options,
-              modalType: SmartSelectModalType.bottomSheet,
-              choiceType: SmartSelectChoiceType.radios,
-              onChange: (val) => setState(() => soreThroat = val)
-            ),
+                title: 'Do you have sore throat?',
+                value: soreThroat,
+                options: options,
+                modalType: SmartSelectModalType.bottomSheet,
+                choiceType: SmartSelectChoiceType.radios,
+                onChange: (val) => setState(() => soreThroat = val)),
 
             SizedBox(height: 10.0),
 
             SmartSelect<String>.single(
-              title: 'Do you have headache?',
-              value: headAche,
-              options: options,
-              modalType: SmartSelectModalType.bottomSheet,
-              choiceType: SmartSelectChoiceType.radios,
-              onChange: (val) => setState(() => headAche = val)
-            ),
+                title: 'Do you have headache?',
+                value: headAche,
+                options: options,
+                modalType: SmartSelectModalType.bottomSheet,
+                choiceType: SmartSelectChoiceType.radios,
+                onChange: (val) => setState(() => headAche = val)),
 
             SizedBox(height: 10.0),
 
             SmartSelect<String>.single(
-              title: 'Do you have fever?',
-              value: fever,
-              options: options,
-              modalType: SmartSelectModalType.bottomSheet,
-              choiceType: SmartSelectChoiceType.radios,
-              onChange: (val) => setState(() => fever = val)
-            ),
+                title: 'Do you have fever?',
+                value: fever,
+                options: options,
+                modalType: SmartSelectModalType.bottomSheet,
+                choiceType: SmartSelectChoiceType.radios,
+                onChange: (val) => setState(() => fever = val)),
 
             SizedBox(height: 10.0),
 
             SmartSelect<String>.single(
-              title: 'Do you have travel history?',
-              value: travelHistory,
-              options: options,
-              modalType: SmartSelectModalType.bottomSheet,
-              choiceType: SmartSelectChoiceType.radios,
-              onChange: (val) => setState(() => travelHistory = val)
-            ),
+                title: 'Do you have travel history?',
+                value: travelHistory,
+                options: options,
+                modalType: SmartSelectModalType.bottomSheet,
+                choiceType: SmartSelectChoiceType.radios,
+                onChange: (val) => setState(() => travelHistory = val)),
 
             SizedBox(height: 10.0),
 
             SmartSelect<String>.single(
-              title: 'Do you have exposure?',
-              value: exposure,
-              options: options,
-              modalType: SmartSelectModalType.bottomSheet,
-              choiceType: SmartSelectChoiceType.radios,
-              onChange: (val) => setState(() => exposure = val)
-            ),
+                title: 'Do you have exposure?',
+                value: exposure,
+                options: options,
+                modalType: SmartSelectModalType.bottomSheet,
+                choiceType: SmartSelectChoiceType.radios,
+                onChange: (val) => setState(() => exposure = val)),
 
             SizedBox(height: 10.0),
 
             SmartSelect<String>.single(
-              title: 'Do you have cough or colds?',
-              value: cough,
-              options: options,
-              modalType: SmartSelectModalType.bottomSheet,
-              choiceType: SmartSelectChoiceType.radios,
-              onChange: (val) => setState(() => cough = val)
-            ),
+                title: 'Do you have cough or colds?',
+                value: cough,
+                options: options,
+                modalType: SmartSelectModalType.bottomSheet,
+                choiceType: SmartSelectChoiceType.radios,
+                onChange: (val) => setState(() => cough = val)),
 
             SizedBox(height: 10.0),
 
             SmartSelect<String>.single(
-              title: 'Do you have body pain?',
-              value: bodyPain,
-              options: options,
-              modalType: SmartSelectModalType.bottomSheet,
-              choiceType: SmartSelectChoiceType.radios,
-              onChange: (val) => setState(() => bodyPain = val)
-            ),
+                title: 'Do you have body pain?',
+                value: bodyPain,
+                options: options,
+                modalType: SmartSelectModalType.bottomSheet,
+                choiceType: SmartSelectChoiceType.radios,
+                onChange: (val) => setState(() => bodyPain = val)),
 
             // Container(
             //   alignment: Alignment.centerRight,
@@ -596,14 +686,33 @@ class _QuestionsState extends State<Questions> {
             // ),
 
             SizedBox(height: 80.0),
-
-      
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Confirm"),
+                  content: Text("Do you want to submit survey now?"),
+                  actions: <Widget>[
+                    new FlatButton(
+                        child: const Text('Cancel'),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        }),
+                    new FlatButton(
+                        child: const Text('Submit'),
+                        onPressed: () {
+                          _postTrace();
+                          Navigator.pop(context);
+                        })
+                  ],
+                );
+              });
         },
         label: Text('Submit'),
         icon: Icon(Icons.check_circle),

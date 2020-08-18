@@ -19,6 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  intl: ^0.15.7
   cupertino_icons: ^0.1.2
   introduction_screen: ^1.0.8
   font_awesome_flutter: ^8.5.0

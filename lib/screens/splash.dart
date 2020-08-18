@@ -13,7 +13,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
 
   startTimeout() {
-    return  Timer(Duration(seconds: 2), changeScreen);
+    return  Timer(Duration(seconds: 3), changeScreen);
   }
 
   changeScreen() async{
