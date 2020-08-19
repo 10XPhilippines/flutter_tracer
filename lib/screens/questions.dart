@@ -301,7 +301,7 @@ class _QuestionsState extends State<Questions> {
                   ),
                 ),
                 child: TextField(
-                  enabled: false,
+                  enabled: true,
                   style: TextStyle(
                     fontSize: 15.0,
                     color: Colors.black,
@@ -351,7 +351,7 @@ class _QuestionsState extends State<Questions> {
                   ),
                 ),
                 child: TextField(
-                  enabled: false,
+                  enabled: true,
                   style: TextStyle(
                     fontSize: 15.0,
                     color: Colors.black,
