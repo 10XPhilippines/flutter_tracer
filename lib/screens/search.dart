@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_ui_kit/util/const.dart';
-import 'package:restaurant_ui_kit/util/foods.dart';
-import 'package:restaurant_ui_kit/widgets/smooth_star_rating.dart';
+import 'package:flutter_tracer/util/const.dart';
+import 'package:flutter_tracer/util/foods.dart';
+import 'package:flutter_tracer/widgets/smooth_star_rating.dart';
 
 
 class SearchScreen extends StatefulWidget {

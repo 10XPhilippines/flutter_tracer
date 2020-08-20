@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:restaurant_ui_kit/network_utils/api.dart';
-import 'package:restaurant_ui_kit/screens/main_screen.dart';
+import 'package:flutter_tracer/network_utils/api.dart';
+import 'package:flutter_tracer/screens/main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterScreen extends StatefulWidget {

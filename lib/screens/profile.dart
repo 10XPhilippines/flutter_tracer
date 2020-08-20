@@ -3,12 +3,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_ui_kit/providers/app_provider.dart';
-import 'package:restaurant_ui_kit/screens/splash.dart';
-import 'package:restaurant_ui_kit/screens/login.dart';
-import 'package:restaurant_ui_kit/util/const.dart';
+import 'package:flutter_tracer/providers/app_provider.dart';
+import 'package:flutter_tracer/screens/splash.dart';
+import 'package:flutter_tracer/screens/login.dart';
+import 'package:flutter_tracer/util/const.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:restaurant_ui_kit/network_utils/api.dart';
+import 'package:flutter_tracer/network_utils/api.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class Profile extends StatefulWidget {

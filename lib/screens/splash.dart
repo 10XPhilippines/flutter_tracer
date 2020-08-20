@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:restaurant_ui_kit/screens/walkthrough.dart';
-import 'package:restaurant_ui_kit/util/const.dart';
+import 'package:flutter_tracer/screens/walkthrough.dart';
+import 'package:flutter_tracer/util/const.dart';
 
 
 class SplashScreen extends StatefulWidget {

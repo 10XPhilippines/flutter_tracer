@@ -2,15 +2,15 @@ import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurant_ui_kit/screens/cart.dart';
-import 'package:restaurant_ui_kit/screens/favorite_screen.dart';
-import 'package:restaurant_ui_kit/screens/home.dart';
-import 'package:restaurant_ui_kit/screens/notifications.dart';
-import 'package:restaurant_ui_kit/screens/profile.dart';
-import 'package:restaurant_ui_kit/screens/search.dart';
-import 'package:restaurant_ui_kit/util/const.dart';
-import 'package:restaurant_ui_kit/widgets/badge.dart';
-import 'package:restaurant_ui_kit/screens/questions.dart';
+import 'package:flutter_tracer/screens/cart.dart';
+import 'package:flutter_tracer/screens/favorite_screen.dart';
+import 'package:flutter_tracer/screens/home.dart';
+import 'package:flutter_tracer/screens/notifications.dart';
+import 'package:flutter_tracer/screens/profile.dart';
+import 'package:flutter_tracer/screens/search.dart';
+import 'package:flutter_tracer/util/const.dart';
+import 'package:flutter_tracer/widgets/badge.dart';
+import 'package:flutter_tracer/screens/questions.dart';
 
 class MainScreen extends StatefulWidget {
   @override

@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:restaurant_ui_kit/screens/main_screen.dart';
+import 'package:flutter_tracer/screens/main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:restaurant_ui_kit/network_utils/api.dart';
+import 'package:flutter_tracer/network_utils/api.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
-import 'package:restaurant_ui_kit/util/network.dart';
+import 'package:flutter_tracer/util/network.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
