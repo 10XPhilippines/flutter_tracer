@@ -7,6 +7,7 @@ import 'package:flutter_tracer/network_utils/api.dart';
 import 'package:flutter_tracer/screens/main_screen.dart';
 import 'package:flutter_tracer/screens/otp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:future_progress_dialog/future_progress_dialog.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -23,6 +24,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
   var phone;
   var email;
   var password;
+
+  String responseName = "Enter your name";
+  String responsePhone = "Must include country code";
+  String responseEmail = "Must be a valid email address";
+  String responsePassword = "Enter your password";
+
+  Future getFuture() {
+    return Future(() async {
+      await Future.delayed(Duration(seconds: 2));
+      return 'Hello, Future Progress Dialog!';
+    });
+  }
+
+  Future<void> showProgress(BuildContext context) async {
+    await showDialog(
+        context: context,
+        child: FutureProgressDialog(getFuture(), message: Text('Loading...')));
+  }
 
   void _register() async {
     var data = {
@@ -52,9 +71,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("Failed"),
-              content: Text("Please correct the following inputs."),
+              content: Text("Error registering your details. Please try again and check your input."
+              // response['message']['name'].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '') + "\n" +
+              // response['message']['phone'].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '') + "\n" +
+              // response['message']['email'].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '') + "\n" +
+              // response['message']['password'].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '')
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }),
+              ],
             );
           });
+      setState(() {
+        responseName = body["message"]["name"].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '');
+        responsePhone = body["message"]["phone"].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '');
+        responseEmail = body["message"]["email"].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '');
+        responsePassword = body["message"]["password"].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '');
+      });
+      print(body);
     }
   }
 
@@ -89,7 +127,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _checkIfConnected();
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -130,9 +167,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 decoration: InputDecoration(
                   labelText: "Name",
-                  labelStyle: TextStyle(
-                    color: Color.fromRGBO(0, 0, 0, 1.0)
-                  ),
+                  labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
                   contentPadding: EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -146,14 +181,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  hintText: "Enter your name",
+                  hintText: responseName,
                   // prefixIcon: Icon(
                   //   Icons.perm_identity,
                   //   color: Colors.black,
                   // ),
                   hintStyle: TextStyle(
                     fontSize: 15.0,
-                    color: Colors.black,
+                    color: Colors.black54,
                   ),
                 ),
                 maxLines: 1,
@@ -181,6 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 decoration: InputDecoration(
                   labelText: "Phone Number",
+                  labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
                   alignLabelWithHint: true,
                   contentPadding: EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
@@ -195,14 +231,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  hintText: "Must include country code",
+                  hintText: responsePhone ?? "Must include country code",
                   // prefixIcon: Icon(
                   //   Icons.call,
                   //   color: Colors.black,
                   // ),
                   hintStyle: TextStyle(
                     fontSize: 15.0,
-                    color: Colors.black,
+                    color: Colors.black54,
                   ),
                 ),
                 maxLines: 1,
@@ -230,6 +266,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 decoration: InputDecoration(
                   labelText: "Email",
+                  labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
                   alignLabelWithHint: true,
                   contentPadding: EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
@@ -244,14 +281,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  hintText: "Must be a valid email address",
+                  hintText: responseEmail ?? "Must be a valid email address",
                   // prefixIcon: Icon(
                   //   Icons.mail_outline,
                   //   color: Colors.black,
                   // ),
                   hintStyle: TextStyle(
                     fontSize: 15.0,
-                    color: Colors.black,
+                    color: Colors.black54,
                   ),
                 ),
                 maxLines: 1,
@@ -279,6 +316,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 decoration: InputDecoration(
                   labelText: "Password",
+                  labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
                   contentPadding: EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -292,14 +330,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  hintText: "Enter your password",
+                  hintText: responsePassword ?? "Enter your password",
                   // prefixIcon: Icon(
                   //   Icons.lock_outline,
                   //   color: Colors.black,
                   // ),
                   hintStyle: TextStyle(
                     fontSize: 15.0,
-                    color: Colors.black,
+                    color: Colors.black54,
                   ),
                 ),
                 obscureText: true,
