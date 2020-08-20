@@ -1,4 +1,4 @@
-package com.jideguru.restaurant_ui_kit
+package dev.isaaac.tracer
 
 import android.os.Bundle
 

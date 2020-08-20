@@ -5,15 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_tracer/network_utils/api.dart';
 import 'package:flutter_tracer/screens/main_screen.dart';
-import 'package:flutter_tracer/screens/otp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class RegisterScreen extends StatefulWidget {
+class OtpScreen extends StatefulWidget {
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  _OtpScreenState createState() => _OtpScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _OtpScreenState extends State<OtpScreen> {
   final TextEditingController _usernameControl = new TextEditingController();
   final TextEditingController _emailControl = new TextEditingController();
   final TextEditingController _phoneControl = new TextEditingController();
@@ -41,8 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (BuildContext context) {
-            //return MainScreen();
-            return OtpScreen();
+            return MainScreen();
           },
         ),
       );
@@ -130,9 +128,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 decoration: InputDecoration(
                   labelText: "Name",
-                  labelStyle: TextStyle(
-                    color: Color.fromRGBO(0, 0, 0, 1.0)
-                  ),
                   contentPadding: EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
