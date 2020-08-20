@@ -1,7 +1,9 @@
 
 ## 🗒️ TODO
 
-<p style="color: red">High Priority</p>
+```diff
+- High Priority
+```
 
 - [x] User login/registration
 - [x] OTP upon registration
@@ -10,7 +12,9 @@
 - [ ] Contact tracing feature can be use offline
 - [ ] Add unique qr codes upon registration
 
-Low Priority
+```diff
+! Low Priority
+```
 
 - [x] User info
 - [ ] Update user info
