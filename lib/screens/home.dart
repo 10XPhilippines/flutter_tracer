@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_ui_kit/screens/dishes.dart';
-import 'package:restaurant_ui_kit/widgets/grid_product.dart';
-import 'package:restaurant_ui_kit/widgets/home_category.dart';
-import 'package:restaurant_ui_kit/widgets/slider_item.dart';
-import 'package:restaurant_ui_kit/util/foods.dart';
-import 'package:restaurant_ui_kit/util/categories.dart';
+import 'package:flutter_tracer/screens/dishes.dart';
+import 'package:flutter_tracer/widgets/grid_product.dart';
+import 'package:flutter_tracer/widgets/home_category.dart';
+import 'package:flutter_tracer/widgets/slider_item.dart';
+import 'package:flutter_tracer/util/foods.dart';
+import 'package:flutter_tracer/util/categories.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 

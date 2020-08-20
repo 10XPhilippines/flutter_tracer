@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_ui_kit/screens/notifications.dart';
-import 'package:restaurant_ui_kit/util/foods.dart';
-import 'package:restaurant_ui_kit/widgets/badge.dart';
-import 'package:restaurant_ui_kit/widgets/grid_product.dart';
+import 'package:flutter_tracer/screens/notifications.dart';
+import 'package:flutter_tracer/util/foods.dart';
+import 'package:flutter_tracer/widgets/badge.dart';
+import 'package:flutter_tracer/widgets/grid_product.dart';
 
 
 class DishesScreen extends StatefulWidget {
