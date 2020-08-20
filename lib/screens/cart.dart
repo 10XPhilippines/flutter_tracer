@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_ui_kit/screens/checkout.dart';
-import 'package:restaurant_ui_kit/util/foods.dart';
-import 'package:restaurant_ui_kit/widgets/cart_item.dart';
+import 'package:flutter_tracer/screens/checkout.dart';
+import 'package:flutter_tracer/util/foods.dart';
+import 'package:flutter_tracer/widgets/cart_item.dart';
 
 
 class CartScreen extends StatefulWidget {

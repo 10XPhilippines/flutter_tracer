@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
-import 'package:restaurant_ui_kit/network_utils/api.dart';
+import 'package:flutter_tracer/network_utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_select/smart_select.dart';
-import 'package:restaurant_ui_kit/screens/main_screen.dart';
+import 'package:flutter_tracer/screens/main_screen.dart';
 
 class Questions extends StatefulWidget {
   @override

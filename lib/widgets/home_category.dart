@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_ui_kit/screens/categories_screen.dart';
+import 'package:flutter_tracer/screens/categories_screen.dart';
 
 
 class HomeCategory extends StatefulWidget {
