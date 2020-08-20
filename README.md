@@ -13,6 +13,7 @@ High Priority
 Low Priority
 
 - [x] User info
+- [ ] Update user info
 - [ ] Companion feature
 - [ ] User dashboard
 - [ ] Deals preview
