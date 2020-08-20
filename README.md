@@ -1,7 +1,7 @@
 
 ## 🗒️ TODO
 
-High Priority
+<p style="color: red">High Priority</p>
 
 - [x] User login/registration
 - [x] OTP upon registration
