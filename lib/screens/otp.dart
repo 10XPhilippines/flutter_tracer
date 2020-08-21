@@ -44,7 +44,7 @@ class _OtpState extends State<OtpScreen> {
 
     print(input);
 
-    var res = await Network().authData(data, '/verify_otp');
+    var res = await Network().authData(data, '/verify');
     var body = json.decode(res.body);
     if (body['success']) {
       SharedPreferences localStorage = await SharedPreferences.getInstance();

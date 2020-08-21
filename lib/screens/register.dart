@@ -63,6 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         MaterialPageRoute(
           builder: (BuildContext context) {
             //return MainScreen();
+            print("To otp");
             return OtpScreen();
           },
         ),
@@ -183,7 +184,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  hintText: responseName,
+                  hintText: responseName ?? "Enter your name",
                   // prefixIcon: Icon(
                   //   Icons.perm_identity,
                   //   color: Colors.black,
