@@ -142,7 +142,7 @@ class _OtpState extends State<OtpScreen> {
     List<Widget> _pinPuts = [
       // onlySelectedBorderPinPut(),
       // darkRoundedPinPut(),
-      // animatingBorders(),
+      animatingBorders(),
       // boxedPinPutWithPreFilledSymbol(),
       // justRoundedCornersPinPut(),
     ];
