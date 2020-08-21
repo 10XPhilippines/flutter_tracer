@@ -3,9 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pinput/pin_put/pin_put.dart';
-import 'dart:async';
+import 'package:flutter_tracer/network_utils/api.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'main_screen.dart';
 
 class OtpScreen extends StatefulWidget {
   @override
@@ -18,6 +20,9 @@ class _OtpState extends State<OtpScreen> {
   BuildContext _context;
   final PageController _pageController = PageController(initialPage: 1);
   int _pageIndex = 0;
+
+  int otp;
+  int userId;
 
   @override
   void dispose() {
@@ -34,13 +39,37 @@ class _OtpState extends State<OtpScreen> {
   Map profile = {};
   String data;
 
+  verifyOtp() async {
+    var input = { 'id': userId, 'otp': otp };
+
+    print(input);
+
+    var res = await Network().authData(data, '/verify_otp');
+    var body = json.decode(res.body);
+    if (body['success']) {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      localStorage.setString('token', json.encode(body['token']));
+      localStorage.setString('user', json.encode(body['user']));
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return OtpScreen();
+          },
+        ),
+      );
+    }
+  }
+
   getProfile() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     data = preferences.getString("user");
     setState(() {
       profile = json.decode(data);
+      otp = profile["otp"];
+      userId = profile["id"];
     });
     print(profile);
+    print(otp);
   }
 
   _checkIfConnected() async {
@@ -170,13 +199,14 @@ class _OtpState extends State<OtpScreen> {
                   ]),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+              padding: EdgeInsets.fromLTRB(0, 120, 0, 0),
               child: Center(
                   child: Text(
-                "Type the code we've sent to your email.",
+                "Type the code we've sent to your email\n" + profile["email"],
                 style: TextStyle(
                     color: Color.fromRGBO(25, 21, 99, 1),
                     fontWeight: FontWeight.w700),
+                textAlign: TextAlign.center,
               )),
             ),
             _bottomAppBar,
@@ -216,19 +246,37 @@ class _OtpState extends State<OtpScreen> {
   }
 
   void _showSnackBar(String pin) {
-    final snackBar = SnackBar(
-      duration: Duration(seconds: 3),
-      content: Container(
-          height: 50.0,
-          child: Center(
-            child: Text(
-              'Verification success.',
-              style: TextStyle(fontSize: 20.0),
-            ),
-          )),
-      backgroundColor: Colors.greenAccent,
-    );
-    Scaffold.of(_context).hideCurrentSnackBar();
-    Scaffold.of(_context).showSnackBar(snackBar);
+    if (pin == otp.toString()) {
+      verifyOtp();
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 3),
+        content: Container(
+            height: 50.0,
+            child: Center(
+              child: Text(
+                'Verification success.',
+                style: TextStyle(fontSize: 20.0),
+              ),
+            )),
+        backgroundColor: Colors.greenAccent,
+      );
+      Scaffold.of(_context).hideCurrentSnackBar();
+      Scaffold.of(_context).showSnackBar(snackBar);
+    } else {
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 3),
+        content: Container(
+            height: 50.0,
+            child: Center(
+              child: Text(
+                'Verification failed.',
+                style: TextStyle(fontSize: 20.0),
+              ),
+            )),
+        backgroundColor: Colors.redAccent,
+      );
+      Scaffold.of(_context).hideCurrentSnackBar();
+      Scaffold.of(_context).showSnackBar(snackBar);
+    }
   }
 }
