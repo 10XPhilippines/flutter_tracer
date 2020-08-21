@@ -2,10 +2,10 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_tracer/screens/main_screen.dart';
+import 'package:flutter_tracer/screens/otp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_tracer/network_utils/api.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
-import 'package:flutter_tracer/util/network.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -17,6 +17,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordControl = new TextEditingController();
   var email;
   var password;
+  Map profile = {};
+  String datas;
+  String dataOtp;
+  int userId;
+  int isVerified;
   bool _isLoading = false;
 
   String responseName = "Enter your name";
@@ -50,13 +55,33 @@ class _LoginScreenState extends State<LoginScreen> {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', json.encode(body['token']));
       localStorage.setString('user', json.encode(body['user']));
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            return MainScreen();
-          },
-        ),
-      );
+
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      datas = preferences.getString("user");
+      setState(() {
+        profile = json.decode(datas);
+        isVerified = int.parse(profile["is_verified"].toString());
+        userId = int.parse(profile["id"].toString());
+      });
+
+      if (isVerified == 1) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              return MainScreen();
+            },
+          ),
+        );
+      } else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              resendOtp();
+              return OtpScreen();
+            },
+          ),
+        );
+      }
     } else {
       // showProgress(context);
       showDialog(
@@ -77,9 +102,26 @@ class _LoginScreenState extends State<LoginScreen> {
           });
     }
 
+    print("Debug login");
+    print(body);
+
     setState(() {
       _isLoading = false;
     });
+  }
+
+  resendOtp() async {
+    var input = {'id': userId};
+    print(input);
+
+    var res = await Network().authData(input, '/resend');
+    var body = json.decode(res.body);
+    if (body['success']) {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      dataOtp = preferences.getString("user");
+    }
+    print('Debug OTP resend');
+    print(userId);
   }
 
   _showDialog() async {
@@ -187,6 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   fontSize: 15.0,
                   color: Colors.black,
                 ),
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   labelText: "Email",
                   labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
@@ -238,6 +281,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   fontSize: 15.0,
                   color: Colors.black,
                 ),
+                keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
                   labelText: "Password",
                   labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),

@@ -73,7 +73,7 @@ class _OtpState extends State<OtpScreen> {
       setState(() {
         profile = json.decode(data);
         otp = int.parse(profile["otp"].toString());
-        userId = profile["id"];
+        userId = int.parse(profile["id"].toString());
       });
       print(profile);
       print(otp);
@@ -86,8 +86,8 @@ class _OtpState extends State<OtpScreen> {
     data = preferences.getString("user");
     setState(() {
       profile = json.decode(data);
-      otp = profile["otp"];
-      userId = profile["id"];
+      otp = int.parse(profile["otp"].toString());
+      userId = int.parse(profile["id"].toString());
     });
     print(profile);
     print(otp);
@@ -172,7 +172,7 @@ class _OtpState extends State<OtpScreen> {
           // ),
           centerTitle: true,
           title: Text(
-            "One Time Pin",
+            "Verification",
             style: TextStyle(color: Colors.black87),
           ),
           elevation: 0.0,
@@ -266,7 +266,7 @@ class _OtpState extends State<OtpScreen> {
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: Text("OTP"),
-                      content: Text("We've sent another code to your email."),
+                      content: Text("We've sent another verification code to your email."),
                       actions: <Widget>[
                         new FlatButton(
                             child: const Text('OK'),

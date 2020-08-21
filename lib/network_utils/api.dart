@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Network{
   final String _url = 'http://192.168.1.151:8000/api/v1';
+  final String _baseUrl = 'http://192.168.1.151:8000';
   var token;
 
   _getToken() async {
@@ -18,6 +19,10 @@ class Network{
         body: jsonEncode(data),
         headers: _setHeaders()
     );
+  }
+
+  qrCode() {
+    return _baseUrl;
   }
 
   getData(apiUrl) async {

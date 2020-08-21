@@ -6,10 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter_tracer/providers/app_provider.dart';
 import 'package:flutter_tracer/screens/splash.dart';
 import 'package:flutter_tracer/screens/login.dart';
+import 'package:flutter_tracer/screens/otp.dart';
 import 'package:flutter_tracer/util/const.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_tracer/network_utils/api.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -19,13 +19,41 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   Map profile = {};
   String data;
+  int userId;
+  int isVerified;
+  String path;
 
   getProfile() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     data = preferences.getString("user");
     setState(() {
       profile = json.decode(data);
+      isVerified = int.parse(profile["is_verified"].toString());
+      userId = int.parse(profile["id"].toString());
+      path = Network().qrCode() + "/code/" + profile["user_barcode_path"];
     });
+    if (isVerified == 0) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            resendOtp();
+            return OtpScreen();
+          },
+        ),
+      );
+    }
+  }
+
+  resendOtp() async {
+    var input = {'id': userId};
+    print(input);
+
+    var res = await Network().authData(input, '/resend');
+    var body = json.decode(res.body);
+    if (body['success']) {
+      print('Debug OTP resend');
+      print(userId);
+    }
   }
 
   void logout() async {
@@ -138,7 +166,7 @@ class _ProfileState extends State<Profile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text(
                             profile["name"] ?? "No data available",
@@ -147,6 +175,13 @@ class _ProfileState extends State<Profile> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          int.parse(profile["is_verified"].toString()) == 1
+                              ? Icon(
+                                  Icons.verified_user,
+                                  color: Colors.greenAccent,
+                                )
+                              : Icon(Icons.verified_user,
+                                  color: Colors.redAccent),
                         ],
                       ),
                       SizedBox(height: 5.0),
@@ -174,8 +209,7 @@ class _ProfileState extends State<Profile> {
                                   builder: (BuildContext context) {
                                     return AlertDialog(
                                       title: Text("Logout"),
-                                      content: Text(
-                                          "You are about to logout."),
+                                      content: Text("You are about to logout."),
                                       actions: <Widget>[
                                         new FlatButton(
                                             child: const Text('Cancel'),
@@ -209,21 +243,34 @@ class _ProfileState extends State<Profile> {
                 ),
               ],
             ),
-            Divider(),
+            // Divider(),
             Container(height: 15.0),
             Padding(
-              padding: EdgeInsets.all(5.0),
-              child: Text(
-                "Account Information".toUpperCase(),
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
+              padding: EdgeInsets.all(0.0),
+              child: ListTile(
+                title: Text(
+                  "Account Information".toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                trailing: IconButton(
+                  icon: Icon(
+                    Icons.mode_edit,
+                    size: 20.0,
+                  ),
+                  onPressed: () {
+                    _showDialog();
+                  },
+                  tooltip: "Edit",
                 ),
               ),
             ),
+
             ListTile(
               title: Text(
-                "Full Name",
+                "Name",
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
@@ -231,16 +278,6 @@ class _ProfileState extends State<Profile> {
               ),
               subtitle: Text(
                 profile["name"] ?? "No data available",
-              ),
-              trailing: IconButton(
-                icon: Icon(
-                  Icons.edit,
-                  size: 20.0,
-                ),
-                onPressed: () {
-                  _showDialog();
-                },
-                tooltip: "Edit",
               ),
             ),
             ListTile(
@@ -291,35 +328,62 @@ class _ProfileState extends State<Profile> {
                 profile["sex"] ?? "No data available",
               ),
             ),
-            MediaQuery.of(context).platformBrightness == Brightness.dark
-                ? SizedBox()
-                : ListTile(
-                    title: Text(
-                      "Dark Theme",
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    trailing: Switch(
-                      value: Provider.of<AppProvider>(context).theme ==
-                              Constants.lightTheme
-                          ? false
-                          : true,
-                      onChanged: (v) async {
-                        if (v) {
-                          Provider.of<AppProvider>(context, listen: false)
-                              .setTheme(Constants.darkTheme, "dark");
-                        } else {
-                          Provider.of<AppProvider>(context, listen: false)
-                              .setTheme(Constants.lightTheme, "light");
-                        }
-                      },
-                      activeColor: Theme.of(context).accentColor,
-                    ),
-                  ),
+            // MediaQuery.of(context).platformBrightness == Brightness.dark
+            //     ? SizedBox()
+            //     : ListTile(
+            //         title: Text(
+            //           "Dark Theme",
+            //           style: TextStyle(
+            //             fontSize: 17,
+            //             fontWeight: FontWeight.w700,
+            //           ),
+            //         ),
+            //         trailing: Switch(
+            //           value: Provider.of<AppProvider>(context).theme ==
+            //                   Constants.lightTheme
+            //               ? false
+            //               : true,
+            //           onChanged: (v) async {
+            //             if (v) {
+            //               Provider.of<AppProvider>(context, listen: false)
+            //                   .setTheme(Constants.darkTheme, "dark");
+            //             } else {
+            //               Provider.of<AppProvider>(context, listen: false)
+            //                   .setTheme(Constants.lightTheme, "light");
+            //             }
+            //           },
+            //           activeColor: Theme.of(context).accentColor,
+            //         ),
+            //       ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  content: Image.network(path),
+                  actions: <Widget>[
+                    new FlatButton(
+                        child: const Text('Export'),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        }),
+                    new FlatButton(
+                        child: const Text('Close'),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        })
+                  ],
+                );
+              });
+        },
+        label: Text('My QR'),
+        icon: Icon(Icons.camera),
+        backgroundColor: Colors.pink,
       ),
     );
   }

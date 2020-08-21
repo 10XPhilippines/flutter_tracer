@@ -3,16 +3,12 @@ import 'package:flutter_tracer/screens/login.dart';
 import 'package:flutter_tracer/screens/register.dart';
 import 'package:flutter/services.dart';
 
-
 class JoinApp extends StatefulWidget {
   @override
   _JoinAppState createState() => _JoinAppState();
 }
 
-
-
-class _JoinAppState extends State<JoinApp> with SingleTickerProviderStateMixin{
-
+class _JoinAppState extends State<JoinApp> with SingleTickerProviderStateMixin {
   TabController _tabController;
 
   @override
@@ -21,7 +17,6 @@ class _JoinAppState extends State<JoinApp> with SingleTickerProviderStateMixin{
     _tabController = TabController(vsync: this, initialIndex: 1, length: 2);
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +27,21 @@ class _JoinAppState extends State<JoinApp> with SingleTickerProviderStateMixin{
           icon: Icon(
             Icons.keyboard_backspace,
           ),
-          onPressed: ()=>Navigator.pop(context),
+          onPressed: () => Navigator.pop(context),
         ),
+        // leading: IconButton(
+        //   icon: Icon(
+        //     Icons.keyboard_backspace,
+        //     color: Colors.black87,
+        //   ),
+        //   onPressed: () => Navigator.pop(context),
+        // ),
+        centerTitle: true,
+        title: Text(
+          "10X Philippines",
+          style: TextStyle(color: Colors.black87),
+        ),
+        elevation: 0.0,
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: Theme.of(context).accentColor,
@@ -57,7 +65,6 @@ class _JoinAppState extends State<JoinApp> with SingleTickerProviderStateMixin{
           ],
         ),
       ),
-
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
@@ -65,8 +72,6 @@ class _JoinAppState extends State<JoinApp> with SingleTickerProviderStateMixin{
           RegisterScreen(),
         ],
       ),
-
-
     );
   }
 }

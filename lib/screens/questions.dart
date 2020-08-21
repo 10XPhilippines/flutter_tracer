@@ -14,11 +14,15 @@ class Questions extends StatefulWidget {
 }
 
 class _QuestionsState extends State<Questions> {
+  final TextEditingController _phoneControl = new TextEditingController();
+  final TextEditingController _nameControl = new TextEditingController();
+  final TextEditingController _emailControl = new TextEditingController();
   Map profile = {};
   Map business = {};
   Map user = {};
   String data;
   String barcode = "";
+  String hasBusiness;
   String businessName = "No scanned code yet";
   String businessId = "";
   String userId = "";
@@ -112,6 +116,31 @@ class _QuestionsState extends State<Questions> {
   Future _scan() async {
     String barcode = await scanner.scan();
     setState(() => this.barcode = barcode);
+    if (hasBusiness == null) {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Unavailable"),
+              content: Text("No business name is linked to that QR code."),
+              actions: <Widget>[
+                new FlatButton(
+                    child: const Text('Close'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }),
+                new FlatButton(
+                    child: const Text('Try again'),
+                    onPressed: () {
+                     
+                      Navigator.pop(context);
+                       _scan();
+                    })
+              ],
+            );
+          });
+    }
     print(barcode);
     _getBusiness();
   }
@@ -125,6 +154,7 @@ class _QuestionsState extends State<Questions> {
       setState(() {
         business = body;
         businessName = business["business"]["business_name"];
+        hasBusiness = business["business"];
         dateEntry = DateFormat('yyyy-MM-dd kk:mm:ss').format(now);
         businessId = business["business"]["id"].toString();
         userId = business["user"]["id"].toString();
@@ -136,6 +166,7 @@ class _QuestionsState extends State<Questions> {
     print(businessId);
     print(dateEntry);
     print(userId);
+    print(hasBusiness);
   }
 
   void _postTrace() async {
@@ -257,7 +288,8 @@ class _QuestionsState extends State<Questions> {
                     color: Colors.black,
                   ),
                   decoration: InputDecoration(
-                    labelText: profile["name"] ?? "Name",
+                    labelText: "Name",
+                    labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
                     contentPadding: EdgeInsets.all(10.0),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
@@ -272,9 +304,13 @@ class _QuestionsState extends State<Questions> {
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     hintText: "Enter your name",
+                    // prefixIcon: Icon(
+                    //   Icons.perm_identity,
+                    //   color: Colors.black,
+                    // ),
                     hintStyle: TextStyle(
                       fontSize: 15.0,
-                      color: Colors.black,
+                      color: Colors.black54,
                     ),
                     // prefixIcon: Icon(
                     //   Icons.perm_identity,
@@ -282,6 +318,7 @@ class _QuestionsState extends State<Questions> {
                     // ),
                   ),
                   maxLines: 1,
+                  controller: TextEditingController(text: profile["name"]),
                   onChanged: (value) {
                     name = value;
                   },
@@ -307,7 +344,8 @@ class _QuestionsState extends State<Questions> {
                     color: Colors.black,
                   ),
                   decoration: InputDecoration(
-                    labelText: profile["email"] ?? "Email Address",
+                    labelText: "Email Address",
+                    labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
                     contentPadding: EdgeInsets.all(10.0),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
@@ -328,10 +366,11 @@ class _QuestionsState extends State<Questions> {
                     // ),
                     hintStyle: TextStyle(
                       fontSize: 15.0,
-                      color: Colors.black,
+                      color: Colors.black54,
                     ),
                   ),
                   maxLines: 1,
+                  controller: TextEditingController(text: profile["email"]),
                   onChanged: (value) {
                     email = value;
                   },
@@ -356,8 +395,10 @@ class _QuestionsState extends State<Questions> {
                     fontSize: 15.0,
                     color: Colors.black,
                   ),
+                  keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
-                    labelText: profile["phone"] ?? "Phone Number",
+                    labelText: "Phone Number",
+                    labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
                     contentPadding: EdgeInsets.all(10.0),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
@@ -378,10 +419,11 @@ class _QuestionsState extends State<Questions> {
                     // ),
                     hintStyle: TextStyle(
                       fontSize: 15.0,
-                      color: Colors.black,
+                      color: Colors.black54,
                     ),
                   ),
                   maxLines: 1,
+                  controller: TextEditingController(text: profile["phone"]),
                   onChanged: (value) {
                     phoneNumber = value;
                   },

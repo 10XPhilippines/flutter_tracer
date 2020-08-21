@@ -12,8 +12,8 @@
 - [x] Health condition survey
 - [X] Add unique qr codes upon registration
 - [X] Radio buttons
-- [ ] Redirect to OTP screen if not verified (main.dart)
-- [ ] Contact tracing feature can be use offline
+- [X] Redirect to OTP screen if not verified (main.dart)
+- [ ] Contact tracing feature can be use offline (Save data locally)
 - [ ] Latest survey should be fetch by merchants upon scanning user QR
 
 ```diff
@@ -21,6 +21,7 @@
 ```
 
 - [x] User info
+- [x] Show user QR code
 - [ ] Update user info
 - [ ] Companion feature
 - [ ] User dashboard

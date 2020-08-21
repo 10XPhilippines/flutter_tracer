@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,8 @@ import 'package:flutter_tracer/screens/search.dart';
 import 'package:flutter_tracer/util/const.dart';
 import 'package:flutter_tracer/widgets/badge.dart';
 import 'package:flutter_tracer/screens/questions.dart';
+import 'package:flutter_tracer/screens/otp.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -21,11 +24,40 @@ class _MainScreenState extends State<MainScreen> {
   Uint8List bytes = Uint8List(0);
   PageController _pageController;
   int _page = 0;
+  int isVerified;
+  Map profile = {};
+  String data;
 
   @override
   initState() {
+    getProfile();
+    if (isVerified == 0) {
+      gotoScreen();
+    }
     super.initState();
     _pageController = PageController();
+  }
+
+  getProfile() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    data = preferences.getString("user");
+    setState(() {
+      profile = json.decode(data);
+      isVerified = int.parse(profile["is_verified"].toString());
+    });
+    print(profile);
+  }
+
+  gotoScreen() async {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          //return MainScreen();
+          print("Debug got to screen");
+          return OtpScreen();
+        },
+      ),
+    );
   }
 
   @override
@@ -146,16 +178,16 @@ class _MainScreenState extends State<MainScreen> {
               //   onPressed: ()=>_pageController.jumpToPage(3),
               // ),
 
-              IconButton(
-                icon: Icon(
-                  Icons.person,
-                  size: 24.0,
-                ),
-                color: _page == 4
-                    ? Theme.of(context).accentColor
-                    : Theme.of(context).textTheme.caption.color,
-                onPressed: () => _pageController.jumpToPage(4),
-              ),
+              // IconButton(
+              //   icon: Icon(
+              //     Icons.person,
+              //     size: 24.0,
+              //   ),
+              //   color: _page == 4
+              //       ? Theme.of(context).accentColor
+              //       : Theme.of(context).textTheme.caption.color,
+              //   onPressed: () => _pageController.jumpToPage(4),
+              // ),
 
               SizedBox(width: 7),
             ],

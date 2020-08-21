@@ -213,6 +213,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   fontSize: 15.0,
                   color: Colors.black,
                 ),
+                keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
                   labelText: "Phone Number",
                   labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
@@ -241,7 +242,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 maxLines: 1,
-                controller: _phoneControl,
+                controller: TextEditingController(text: "+63"),
                 onChanged: (value) {
                   phone = value;
                 },
@@ -263,6 +264,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   fontSize: 15.0,
                   color: Colors.black,
                 ),
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   labelText: "Email",
                   labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
@@ -313,6 +315,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   fontSize: 15.0,
                   color: Colors.black,
                 ),
+                keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
                   labelText: "Password",
                   labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
