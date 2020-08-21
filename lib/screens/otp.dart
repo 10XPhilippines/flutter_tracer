@@ -1,5 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pinput/pin_put/pin_put.dart';
+import 'dart:async';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OtpScreen extends StatefulWidget {
   @override
@@ -12,6 +18,57 @@ class _OtpState extends State<OtpScreen> {
   BuildContext _context;
   final PageController _pageController = PageController(initialPage: 1);
   int _pageIndex = 0;
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    getProfile();
+    _checkIfConnected();
+    super.initState();
+  }
+
+  Map profile = {};
+  String data;
+
+  getProfile() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    data = preferences.getString("user");
+    setState(() {
+      profile = json.decode(data);
+    });
+    print(profile);
+  }
+
+  _checkIfConnected() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print('connected');
+        getProfile();
+      }
+    } on SocketException catch (_) {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Network"),
+              content: Text("You are not connected to the internet."),
+              actions: <Widget>[
+                new FlatButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    })
+              ],
+            );
+          });
+    }
+  }
 
   Widget darkRoundedPinPut() {
     BoxDecoration pinPutDecoration = BoxDecoration(
@@ -29,122 +86,14 @@ class _OtpState extends State<OtpScreen> {
       selectedFieldDecoration: pinPutDecoration,
       followingFieldDecoration: pinPutDecoration,
       pinAnimationType: PinAnimationType.scale,
-      textStyle: TextStyle(color: Colors.white, fontSize: 20),
-    );
-  }
-
-  Widget animatingBorders() {
-    BoxDecoration pinPutDecoration = BoxDecoration(
-      border: Border.all(color: Colors.deepPurpleAccent),
-      borderRadius: BorderRadius.circular(15),
-    );
-    return PinPut(
-      fieldsCount: 5,
-      eachFieldHeight: 40,
-      onSubmit: (String pin) => _showSnackBar(pin),
-      focusNode: _pinPutFocusNode,
-      controller: _pinPutController,
-      submittedFieldDecoration:
-          pinPutDecoration.copyWith(borderRadius: BorderRadius.circular(20)),
-      pinAnimationType: PinAnimationType.slide,
-      selectedFieldDecoration: pinPutDecoration,
-      followingFieldDecoration: pinPutDecoration.copyWith(
-        borderRadius: BorderRadius.circular(5),
-        border: Border.all(
-          color: Colors.deepPurpleAccent.withOpacity(.5),
-        ),
-      ),
-    );
-  }
-
-  Widget boxedPinPutWithPreFilledSymbol() {
-    BoxDecoration pinPutDecoration = BoxDecoration(
-      color: Color.fromRGBO(119, 125, 226, 1),
-      borderRadius: BorderRadius.circular(5),
-    );
-
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(3),
-        border: Border.all(color: Colors.white),
-      ),
-      padding: EdgeInsets.all(20),
-      child: PinPut(
-        fieldsCount: 5,
-        preFilledChar: '-',
-        preFilledCharStyle: TextStyle(fontSize: 35, color: Colors.white),
-        textStyle: TextStyle(fontSize: 25, color: Colors.white),
-        eachFieldWidth: 50,
-        eachFieldHeight: 50,
-        onSubmit: (String pin) => _showSnackBar(pin),
-        focusNode: _pinPutFocusNode,
-        controller: _pinPutController,
-        submittedFieldDecoration: pinPutDecoration,
-        selectedFieldDecoration: pinPutDecoration.copyWith(color: Colors.white),
-        followingFieldDecoration: pinPutDecoration,
-        pinAnimationType: PinAnimationType.slide,
-      ),
-    );
-  }
-
-  Widget onlySelectedBorderPinPut() {
-    BoxDecoration pinPutDecoration = BoxDecoration(
-      color: Color.fromRGBO(235, 236, 237, 1),
-      borderRadius: BorderRadius.circular(5),
-    );
-
-    return PinPut(
-      fieldsCount: 4,
-      textStyle: TextStyle(fontSize: 25, color: Colors.black),
-      eachFieldWidth: 45,
-      eachFieldHeight: 55,
-      onSubmit: (String pin) => _showSnackBar(pin),
-      focusNode: _pinPutFocusNode,
-      controller: _pinPutController,
-      submittedFieldDecoration: pinPutDecoration,
-      selectedFieldDecoration: pinPutDecoration.copyWith(
-          color: Colors.white,
-          border: Border.all(
-            width: 2,
-            color: Color.fromRGBO(160, 215, 220, 1),
-          )),
-      followingFieldDecoration: pinPutDecoration,
-      pinAnimationType: PinAnimationType.scale,
-    );
-  }
-
-  Widget justRoundedCornersPinPut() {
-    BoxDecoration pinPutDecoration = BoxDecoration(
-        color: Color.fromRGBO(43, 46, 66, 1),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Color.fromRGBO(126, 203, 224, 1)));
-
-    return Padding(
-      padding: const EdgeInsets.all(30.0),
-      child: PinPut(
-        fieldsCount: 4,
-        textStyle: TextStyle(fontSize: 25, color: Colors.white),
-        eachFieldWidth: 40,
-        eachFieldHeight: 55,
-        onSubmit: (String pin) => _showSnackBar(pin),
-        focusNode: _pinPutFocusNode,
-        controller: _pinPutController,
-        submittedFieldDecoration: pinPutDecoration,
-        selectedFieldDecoration: pinPutDecoration,
-        followingFieldDecoration: pinPutDecoration,
-        pinAnimationType: PinAnimationType.fade,
-      ),
+      textStyle: TextStyle(color: Colors.white, fontSize: 25),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     List<Widget> _pinPuts = [
-      // onlySelectedBorderPinPut(),
-      // darkRoundedPinPut(),
-      animatingBorders(),
-      // boxedPinPutWithPreFilledSymbol(),
-      // justRoundedCornersPinPut(),
+      darkRoundedPinPut(),
     ];
 
     List<Color> _bgColors = [
@@ -173,7 +122,7 @@ class _OtpState extends State<OtpScreen> {
           // ),
           centerTitle: true,
           title: Text(
-            "OTP",
+            "One Time Pin",
             style: TextStyle(color: Colors.black87),
           ),
           elevation: 0.0,
@@ -207,6 +156,29 @@ class _OtpState extends State<OtpScreen> {
                 );
               },
             ),
+            Padding(
+              padding: EdgeInsets.all(15),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Image.asset(
+                      'assets/otp.jpg',
+                      height: 170.0,
+                    ),
+                  ]),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+              child: Center(
+                  child: Text(
+                "Type the code we've sent to your email.",
+                style: TextStyle(
+                    color: Color.fromRGBO(25, 21, 99, 1),
+                    fontWeight: FontWeight.w700),
+              )),
+            ),
             _bottomAppBar,
           ],
         ),
@@ -230,10 +202,14 @@ class _OtpState extends State<OtpScreen> {
           //   child: Text('Unfocus'),
           //   onPressed: () => _pinPutFocusNode.unfocus(),
           // ),
+          // FlatButton(
+          //   child: Text('Clear All'),
+          //   onPressed: () => _pinPutController.text = '',
+          // ),
           FlatButton(
-            child: Text('Clear All'),
-            onPressed: () => _pinPutController.text = '',
-          ),
+            child: Text("Didn't receive a code?"),
+            onPressed: () {},
+          )
         ],
       ),
     );
@@ -243,14 +219,14 @@ class _OtpState extends State<OtpScreen> {
     final snackBar = SnackBar(
       duration: Duration(seconds: 3),
       content: Container(
-          height: 80.0,
+          height: 50.0,
           child: Center(
             child: Text(
-              'Pin Submitted. Value: $pin',
-              style: TextStyle(fontSize: 25.0),
+              'Verification success.',
+              style: TextStyle(fontSize: 20.0),
             ),
           )),
-      backgroundColor: Colors.deepPurpleAccent,
+      backgroundColor: Colors.greenAccent,
     );
     Scaffold.of(_context).hideCurrentSnackBar();
     Scaffold.of(_context).showSnackBar(snackBar);

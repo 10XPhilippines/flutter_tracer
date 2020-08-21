@@ -51,6 +51,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'name': name,
     };
 
+    print(data);
+
     var res = await Network().authData(data, '/register');
     var body = json.decode(res.body);
     if (body['success']) {
