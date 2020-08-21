@@ -75,10 +75,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             return AlertDialog(
               title: Text("Failed"),
               content: Text("Error registering your details. Please try again and check your input."
-              // response['message']['name'].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '') + "\n" +
-              // response['message']['phone'].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '') + "\n" +
-              // response['message']['email'].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '') + "\n" +
-              // response['message']['password'].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '')
               ),
               actions: <Widget>[
                 new FlatButton(

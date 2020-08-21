@@ -19,6 +19,9 @@ class _LoginScreenState extends State<LoginScreen> {
   var password;
   bool _isLoading = false;
 
+  String responseName = "Enter your name";
+  String responsePassword = "Enter your password";
+
   Future getFuture() {
     return Future(() async {
       await Future.delayed(Duration(seconds: 2));
@@ -32,7 +35,54 @@ class _LoginScreenState extends State<LoginScreen> {
         child: FutureProgressDialog(getFuture(), message: Text('Loading...')));
   }
 
-_showDialog() async {
+  void _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    var data = {'email': email, 'password': password};
+
+    print(data);
+
+    var res = await Network().authData(data, '/login');
+    var body = json.decode(res.body);
+    if (body['success']) {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      localStorage.setString('token', json.encode(body['token']));
+      localStorage.setString('user', json.encode(body['user']));
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return MainScreen();
+          },
+        ),
+      );
+    } else {
+      // showProgress(context);
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Failed"),
+              content: Text("Invalid credentials. Try again."),
+              actions: <Widget>[
+                new FlatButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    })
+              ],
+            );
+          });
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  _showDialog() async {
     await showDialog<String>(
       context: context,
       child: new AlertDialog(
@@ -139,6 +189,7 @@ _showDialog() async {
                 ),
                 decoration: InputDecoration(
                   labelText: "Email",
+                  labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
                   contentPadding: EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -152,10 +203,10 @@ _showDialog() async {
                     ),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  hintText: "Email",
+                  hintText: "Enter your email",
                   hintStyle: TextStyle(
                     fontSize: 15.0,
-                    color: Colors.black,
+                    color: Colors.black54,
                   ),
                   // prefixIcon: Icon(
                   //   Icons.perm_identity,
@@ -189,6 +240,7 @@ _showDialog() async {
                 ),
                 decoration: InputDecoration(
                   labelText: "Password",
+                  labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
                   contentPadding: EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -202,14 +254,14 @@ _showDialog() async {
                     ),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  hintText: "Password",
+                  hintText: "Enter your password",
                   // prefixIcon: Icon(
                   //   Icons.lock_outline,
                   //   color: Colors.black,
                   // ),
                   hintStyle: TextStyle(
                     fontSize: 15.0,
-                    color: Colors.black,
+                    color: Colors.black54,
                   ),
                 ),
                 obscureText: true,
@@ -309,52 +361,5 @@ _showDialog() async {
         ],
       ),
     );
-  }
-
-  void _login() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    var data = {'email': email, 'password': password};
-
-    print(data);
-
-    var res = await Network().authData(data, '/login');
-    var body = json.decode(res.body);
-    if (body['success']) {
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      localStorage.setString('token', json.encode(body['token']));
-      localStorage.setString('user', json.encode(body['user']));
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            return MainScreen();
-          },
-        ),
-      );
-    } else {
-      showProgress(context);
-      showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Failed"),
-              content: Text("Error signing in. Try again."),
-              actions: <Widget>[
-                new FlatButton(
-                    child: const Text('OK'),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    })
-              ],
-            );
-          });
-    }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 }

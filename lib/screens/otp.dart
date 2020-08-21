@@ -4,9 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:flutter_tracer/network_utils/api.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'main_screen.dart';
 
 class OtpScreen extends StatefulWidget {
@@ -40,11 +38,11 @@ class _OtpState extends State<OtpScreen> {
   String data;
 
   verifyOtp() async {
-    var input = { 'id': userId, 'otp': otp };
+    var input = {'id': userId};
 
     print(input);
 
-    var res = await Network().authData(data, '/verify');
+    var res = await Network().authData(input, '/verify');
     var body = json.decode(res.body);
     if (body['success']) {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
@@ -53,11 +51,34 @@ class _OtpState extends State<OtpScreen> {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (BuildContext context) {
-            return OtpScreen();
+            return MainScreen();
           },
         ),
       );
     }
+  }
+
+  resendOtp() async {
+    var input = {'id': userId};
+    print(input);
+
+    var res = await Network().authData(input, '/resend');
+    var body = json.decode(res.body);
+    if (body['success']) {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      localStorage.setString('token', json.encode(body['token']));
+      localStorage.setString('user', json.encode(body['user']));
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      data = preferences.getString("user");
+      setState(() {
+        profile = json.decode(data);
+        otp = int.parse(profile["otp"].toString());
+        userId = profile["id"];
+      });
+      print(profile);
+      print(otp);
+    }
+    print(body);
   }
 
   getProfile() async {
@@ -238,7 +259,24 @@ class _OtpState extends State<OtpScreen> {
           // ),
           FlatButton(
             child: Text("Didn't receive a code?"),
-            onPressed: () {},
+            onPressed: () {
+              resendOtp();
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("OTP"),
+                      content: Text("We've sent another code to your email."),
+                      actions: <Widget>[
+                        new FlatButton(
+                            child: const Text('OK'),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            }),
+                      ],
+                    );
+                  });
+            },
           )
         ],
       ),
@@ -254,7 +292,7 @@ class _OtpState extends State<OtpScreen> {
             height: 50.0,
             child: Center(
               child: Text(
-                'Verification success.',
+                'Verification success',
                 style: TextStyle(fontSize: 20.0),
               ),
             )),
@@ -269,7 +307,7 @@ class _OtpState extends State<OtpScreen> {
             height: 50.0,
             child: Center(
               child: Text(
-                'Verification failed.',
+                'Verification failed',
                 style: TextStyle(fontSize: 20.0),
               ),
             )),
