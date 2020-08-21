@@ -7,9 +7,11 @@
 
 - [x] User login/registration
 - [x] OTP upon registration
+- [x] OTP resending
 - [x] Scan business QR codes and survey
 - [x] Health condition survey
 - [X] Add unique qr codes upon registration
+- [ ] Redirect to OTP screen if not verified (main.dart)
 - [ ] Contact tracing feature can be use offline
 - [ ] Radio buttons
 - [ ] Latest survey should be fetch by merchants upon scanning user QR
