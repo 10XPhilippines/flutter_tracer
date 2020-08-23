@@ -21,7 +21,9 @@ class _ProfileState extends State<Profile> {
   String data;
   int userId;
   int isVerified;
+  bool hasConnection = false;
   String path;
+  BuildContext _context;
 
   getProfile() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -32,16 +34,6 @@ class _ProfileState extends State<Profile> {
       userId = int.parse(profile["id"].toString());
       path = Network().qrCode() + "/code/" + profile["user_barcode_path"];
     });
-    if (isVerified == 0) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            resendOtp();
-            return OtpScreen();
-          },
-        ),
-      );
-    }
   }
 
   resendOtp() async {
@@ -59,17 +51,21 @@ class _ProfileState extends State<Profile> {
   void logout() async {
     var res = await Network().getData('/logout');
     var body = json.decode(res.body);
-    if (body['success']) {
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      localStorage.remove('user');
-      localStorage.remove('token');
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            return SplashScreen();
-          },
-        ),
-      );
+    try {
+      if (body['success']) {
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        localStorage.remove('user');
+        localStorage.remove('token');
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              return SplashScreen();
+            },
+          ),
+        );
+      }
+    } catch (e) {
+      print(e.toString());
     }
   }
 
@@ -78,25 +74,29 @@ class _ProfileState extends State<Profile> {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         print('connected');
+        setState(() {
+          hasConnection = true;
+        });
         getProfile();
       }
     } on SocketException catch (_) {
-      showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Network"),
-              content: Text("You are not connected to the internet."),
-              actions: <Widget>[
-                new FlatButton(
-                    child: const Text('OK'),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    })
-              ],
-            );
-          });
+      setState(() {
+        hasConnection = false;
+      });
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 5),
+        content: Container(
+            height: 40.0,
+            child: Center(
+              child: Text(
+                'No connection',
+                style: TextStyle(fontSize: 16.0),
+              ),
+            )),
+        backgroundColor: Colors.redAccent,
+      );
+      Scaffold.of(_context).hideCurrentSnackBar();
+      Scaffold.of(_context).showSnackBar(snackBar);
     }
   }
 
@@ -143,6 +143,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
@@ -359,6 +360,24 @@ class _ProfileState extends State<Profile> {
                 'Edit',
               ),
             ),
+            Divider(),
+            ListTile(
+              title: Text(
+                "Settings",
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              subtitle: Text(
+                'App settings',
+              ),
+              trailing: Icon(
+                Icons.settings,
+              ),
+            ),
+
+            SizedBox(height: 80.0),
             // MediaQuery.of(context).platformBrightness == Brightness.dark
             //     ? SizedBox()
             //     : ListTile(
@@ -396,7 +415,12 @@ class _ProfileState extends State<Profile> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  content: Image.network(path),
+                  content: hasConnection
+                      ? Image.network(path)
+                      : Text(
+                          "No internet connection",
+                          textAlign: TextAlign.center,
+                        ),
                   actions: <Widget>[
                     new FlatButton(
                         child: const Text('Export'),

@@ -133,7 +133,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final snackBar = SnackBar(
         duration: Duration(seconds: 5),
         content: Container(
-            height: 30.0,
+            height: 40.0,
             child: Center(
               child: Text(
                 'Network is unreachable',
@@ -157,7 +157,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final snackBar = SnackBar(
         duration: Duration(seconds: 5),
         content: Container(
-            height: 30.0,
+            height: 40.0,
             child: Center(
               child: Text(
                 'No connection',
@@ -404,6 +404,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           SizedBox(height: 40.0),
           Container(
+            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
             height: 50.0,
             child: RaisedButton(
               child: _isLoading
@@ -427,6 +428,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 _register();
               },
               color: Theme.of(context).accentColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5)
+              ),
             ),
           ),
           SizedBox(height: 10.0),

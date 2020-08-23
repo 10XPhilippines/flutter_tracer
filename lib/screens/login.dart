@@ -56,51 +56,14 @@ class _LoginScreenState extends State<LoginScreen> {
         SharedPreferences localStorage = await SharedPreferences.getInstance();
         localStorage.setString('token', json.encode(body['token']));
         localStorage.setString('user', json.encode(body['user']));
-
-        SharedPreferences preferences = await SharedPreferences.getInstance();
-        datas = preferences.getString("user");
-        setState(() {
-          profile = json.decode(datas);
-          isVerified = int.parse(profile["is_verified"].toString());
-          userId = int.parse(profile["id"].toString());
-        });
-
-        if (isVerified == 1) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (BuildContext context) {
-                return MainScreen();
-              },
-            ),
-          );
-        } else {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (BuildContext context) {
-                resendOtp();
-                return OtpScreen();
-              },
-            ),
-          );
-        }
-      } else {
-        // showProgress(context);
-        showDialog(
-            barrierDismissible: false,
-            context: context,
+        Navigator.of(context).push(
+          MaterialPageRoute(
             builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Failed"),
-                content: Text("Invalid credentials. Try again."),
-                actions: <Widget>[
-                  new FlatButton(
-                      child: const Text('OK'),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      })
-                ],
-              );
-            });
+              resendOtp();
+              return MainScreen();
+            },
+          ),
+        );
       }
 
       print("Debug login");
@@ -117,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final snackBar = SnackBar(
         duration: Duration(seconds: 5),
         content: Container(
-            height: 30.0,
+            height: 40.0,
             child: Center(
               child: Text(
                 'Network is unreachable',
@@ -189,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final snackBar = SnackBar(
         duration: Duration(seconds: 5),
         content: Container(
-            height: 30.0,
+            height: 40.0,
             child: Center(
               child: Text(
                 'No connection',
@@ -360,6 +323,7 @@ class _LoginScreenState extends State<LoginScreen> {
           SizedBox(height: 30.0),
 
           Container(
+            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
             height: 50.0,
             child: RaisedButton(
               child: _isLoading
@@ -384,9 +348,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 // await pr.show();
               },
               color: Theme.of(context).accentColor,
-              // shape: RoundedRectangleBorder(
-              //     borderRadius: BorderRadius.circular(5)
-              // ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5)),
             ),
           ),
 
