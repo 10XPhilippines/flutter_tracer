@@ -384,6 +384,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 // await pr.show();
               },
               color: Theme.of(context).accentColor,
+              // shape: RoundedRectangleBorder(
+              //     borderRadius: BorderRadius.circular(5)
+              // ),
             ),
           ),
 
