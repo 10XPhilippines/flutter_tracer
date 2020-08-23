@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-class Constants{
 
+class Constants {
   static String appName = "10X Philippines";
 
   //Colors for theme
@@ -16,7 +16,7 @@ class Constants{
   static ThemeData lightTheme = ThemeData(
     backgroundColor: lightBG,
     primaryColor: lightPrimary,
-    accentColor:  lightAccent,
+    accentColor: lightAccent,
     cursorColor: lightAccent,
     scaffoldBackgroundColor: lightBG,
     appBarTheme: AppBarTheme(
@@ -53,6 +53,4 @@ class Constants{
 //      ),
     ),
   );
-
-
 }
