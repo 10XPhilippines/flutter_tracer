@@ -13,8 +13,8 @@
 - [X] Add unique qr codes upon registration
 - [X] Radio buttons
 - [X] Redirect to OTP screen if not verified (main.dart)
-- [ ] Circular progress while fetching data (In button state)
-- [ ] Validation textfield errorText
+- [X] Circular progress while fetching data (In button state)
+- [X] Validation textfield errorText not "null"
 - [ ] Contact tracing feature can be use offline (Save data locally)
 - [ ] Latest survey should be fetch by merchants upon scanning user QR
 

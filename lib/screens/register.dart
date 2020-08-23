@@ -24,11 +24,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   var phone;
   var email;
   var password;
-
+  bool _isLoading = false;
   String responseName = "Enter your name";
   String responsePhone = "Must include country code";
   String responseEmail = "Must be a valid email address";
   String responsePassword = "Enter your password";
+  BuildContext _context;
 
   Future getFuture() {
     return Future(() async {
@@ -44,6 +45,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _register() async {
+    setState(() {
+      _isLoading = true;
+    });
     var data = {
       'email': email,
       'password': password,
@@ -53,45 +57,93 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     print(data);
 
-    var res = await Network().authData(data, '/register');
-    var body = json.decode(res.body);
-    if (body['success']) {
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      localStorage.setString('token', json.encode(body['token']));
-      localStorage.setString('user', json.encode(body['user']));
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            //return MainScreen();
-            print("To otp");
-            return OtpScreen();
-          },
-        ),
-      );
-    } else {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Failed"),
-              content: Text("Error registering your details. Please try again and check your input."
-              ),
-              actions: <Widget>[
-                new FlatButton(
-                    child: const Text('OK'),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    }),
-              ],
-            );
-          });
+    try {
+      var res = await Network().authData(data, '/register');
+      var body = json.decode(res.body);
+      if (body['success']) {
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        localStorage.setString('token', json.encode(body['token']));
+        localStorage.setString('user', json.encode(body['user']));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              //return MainScreen();
+              print("To otp");
+              return OtpScreen();
+            },
+          ),
+        );
+      } else {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Failed"),
+                content: Text(
+                    "Error registering your details. Please try again and check your input."),
+                actions: <Widget>[
+                  new FlatButton(
+                      child: const Text('OK'),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      }),
+                ],
+              );
+            });
+        setState(() {
+          responseName = body["message"]["name"]
+              .toString()
+              .replaceAll(new RegExp(r'\['), '')
+              .replaceAll(new RegExp(r'\]'), '');
+          if (responseName == "null") {
+            responseName = "Enter your name";
+          }
+          responsePhone = body["message"]["phone"]
+              .toString()
+              .replaceAll(new RegExp(r'\['), '')
+              .replaceAll(new RegExp(r'\]'), '');
+          if (responsePhone == "null") {
+            responsePhone = "Must include country code";
+          }
+          responseEmail = body["message"]["email"]
+              .toString()
+              .replaceAll(new RegExp(r'\['), '')
+              .replaceAll(new RegExp(r'\]'), '');
+          if (responseEmail == "null") {
+            responseEmail = "Must be a valid email address";
+          }
+          responsePassword = body["message"]["password"]
+              .toString()
+              .replaceAll(new RegExp(r'\['), '')
+              .replaceAll(new RegExp(r'\]'), '');
+          if (responsePassword == "null") {
+            responsePassword = "Enter your password";
+          }
+        });
+        print(body);
+      }
       setState(() {
-        responseName = body["message"]["name"].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '');
-        responsePhone = body["message"]["phone"].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '');
-        responseEmail = body["message"]["email"].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '');
-        responsePassword = body["message"]["password"].toString().replaceAll(new RegExp(r'\['), '').replaceAll(new RegExp(r'\]'), '');
+        _isLoading = false;
       });
-      print(body);
+    } catch (e) {
+      print(e.toString());
+      setState(() {
+        _isLoading = false;
+      });
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 5),
+        content: Container(
+            height: 30.0,
+            child: Center(
+              child: Text(
+                'Network is unreachable',
+                style: TextStyle(fontSize: 16.0),
+              ),
+            )),
+        backgroundColor: Colors.redAccent,
+      );
+      Scaffold.of(_context).hideCurrentSnackBar();
+      Scaffold.of(_context).showSnackBar(snackBar);
     }
   }
 
@@ -102,22 +154,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
         print('connected');
       }
     } on SocketException catch (_) {
-      showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Network"),
-              content: Text("You are not connected to the internet."),
-              actions: <Widget>[
-                new FlatButton(
-                    child: const Text('OK'),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    })
-              ],
-            );
-          });
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 5),
+        content: Container(
+            height: 30.0,
+            child: Center(
+              child: Text(
+                'No connection',
+                style: TextStyle(fontSize: 16.0),
+              ),
+            )),
+        backgroundColor: Colors.redAccent,
+      );
+      Scaffold.of(_context).hideCurrentSnackBar();
+      Scaffold.of(_context).showSnackBar(snackBar);
     }
   }
 
@@ -129,6 +179,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     return Padding(
       padding: EdgeInsets.fromLTRB(20.0, 0, 20, 0),
       child: ListView(
@@ -355,12 +406,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Container(
             height: 50.0,
             child: RaisedButton(
-              child: Text(
-                "Register".toUpperCase(),
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
+              child: _isLoading
+                  ? Center(
+                      child: SizedBox(
+                        child: CircularProgressIndicator(
+                          backgroundColor: Colors.white,
+                          strokeWidth: 2.0,
+                        ),
+                        height: 15.0,
+                        width: 15.0,
+                      ),
+                    )
+                  : Text(
+                      'Register'.toUpperCase(),
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
               onPressed: () {
                 _register();
               },

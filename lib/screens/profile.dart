@@ -328,6 +328,37 @@ class _ProfileState extends State<Profile> {
                 profile["sex"] ?? "No data available",
               ),
             ),
+            Divider(),
+            ListTile(
+              title: Text(
+                "Change email",
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              subtitle: Text(
+                'Update your email',
+              ),
+              trailing: Text(
+                'Edit',
+              ),
+            ),
+            ListTile(
+              title: Text(
+                "Change password",
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              subtitle: Text(
+                'Update your password',
+              ),
+              trailing: Text(
+                'Edit',
+              ),
+            ),
             // MediaQuery.of(context).platformBrightness == Brightness.dark
             //     ? SizedBox()
             //     : ListTile(

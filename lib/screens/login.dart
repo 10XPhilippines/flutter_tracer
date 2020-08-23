@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   int userId;
   int isVerified;
   bool _isLoading = false;
-
+  BuildContext _context;
   String responseName = "Enter your name";
   String responsePassword = "Enter your password";
 
@@ -49,65 +49,86 @@ class _LoginScreenState extends State<LoginScreen> {
 
     print(data);
 
-    var res = await Network().authData(data, '/login');
-    var body = json.decode(res.body);
-    if (body['success']) {
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      localStorage.setString('token', json.encode(body['token']));
-      localStorage.setString('user', json.encode(body['user']));
+    try {
+      var res = await Network().authData(data, '/login');
+      var body = json.decode(res.body);
+      if (body['success']) {
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        localStorage.setString('token', json.encode(body['token']));
+        localStorage.setString('user', json.encode(body['user']));
 
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      datas = preferences.getString("user");
-      setState(() {
-        profile = json.decode(datas);
-        isVerified = int.parse(profile["is_verified"].toString());
-        userId = int.parse(profile["id"].toString());
-      });
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        datas = preferences.getString("user");
+        setState(() {
+          profile = json.decode(datas);
+          isVerified = int.parse(profile["is_verified"].toString());
+          userId = int.parse(profile["id"].toString());
+        });
 
-      if (isVerified == 1) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (BuildContext context) {
-              return MainScreen();
-            },
-          ),
-        );
+        if (isVerified == 1) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return MainScreen();
+              },
+            ),
+          );
+        } else {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                resendOtp();
+                return OtpScreen();
+              },
+            ),
+          );
+        }
       } else {
-        Navigator.of(context).push(
-          MaterialPageRoute(
+        // showProgress(context);
+        showDialog(
+            barrierDismissible: false,
+            context: context,
             builder: (BuildContext context) {
-              resendOtp();
-              return OtpScreen();
-            },
-          ),
-        );
+              return AlertDialog(
+                title: Text("Failed"),
+                content: Text("Invalid credentials. Try again."),
+                actions: <Widget>[
+                  new FlatButton(
+                      child: const Text('OK'),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      })
+                ],
+              );
+            });
       }
-    } else {
-      // showProgress(context);
-      showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Failed"),
-              content: Text("Invalid credentials. Try again."),
-              actions: <Widget>[
-                new FlatButton(
-                    child: const Text('OK'),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    })
-              ],
-            );
-          });
+
+      print("Debug login");
+      print(body);
+
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      print(e.toString());
+      setState(() {
+        _isLoading = false;
+      });
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 5),
+        content: Container(
+            height: 30.0,
+            child: Center(
+              child: Text(
+                'Network is unreachable',
+                style: TextStyle(fontSize: 16.0),
+              ),
+            )),
+        backgroundColor: Colors.redAccent,
+      );
+      Scaffold.of(_context).hideCurrentSnackBar();
+      Scaffold.of(_context).showSnackBar(snackBar);
     }
-
-    print("Debug login");
-    print(body);
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   resendOtp() async {
@@ -165,22 +186,20 @@ class _LoginScreenState extends State<LoginScreen> {
         print('connected');
       }
     } on SocketException catch (_) {
-      showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Network"),
-              content: Text("You are not connected to the internet."),
-              actions: <Widget>[
-                new FlatButton(
-                    child: const Text('OK'),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    })
-              ],
-            );
-          });
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 5),
+        content: Container(
+            height: 30.0,
+            child: Center(
+              child: Text(
+                'No connection',
+                style: TextStyle(fontSize: 16.0),
+              ),
+            )),
+        backgroundColor: Colors.redAccent,
+      );
+      Scaffold.of(_context).hideCurrentSnackBar();
+      Scaffold.of(_context).showSnackBar(snackBar);
     }
   }
 
@@ -192,6 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     return Padding(
       padding: EdgeInsets.fromLTRB(20.0, 0, 20, 0),
       child: ListView(
@@ -342,12 +362,23 @@ class _LoginScreenState extends State<LoginScreen> {
           Container(
             height: 50.0,
             child: RaisedButton(
-              child: Text(
-                _isLoading ? 'Login'.toUpperCase() : 'Login'.toUpperCase(),
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
+              child: _isLoading
+                  ? Center(
+                      child: SizedBox(
+                        child: CircularProgressIndicator(
+                          backgroundColor: Colors.white,
+                          strokeWidth: 2.0,
+                        ),
+                        height: 15.0,
+                        width: 15.0,
+                      ),
+                    )
+                  : Text(
+                      'Login'.toUpperCase(),
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
               onPressed: () async {
                 _login();
                 // await pr.show();
