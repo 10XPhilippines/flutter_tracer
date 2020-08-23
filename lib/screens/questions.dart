@@ -22,7 +22,7 @@ class _QuestionsState extends State<Questions> {
   Map user = {};
   String data;
   String barcode = "";
-  String hasBusiness;
+  bool hasBusiness = false;
   String businessName = "No scanned code yet";
   String businessId = "";
   String userId = "";
@@ -116,7 +116,7 @@ class _QuestionsState extends State<Questions> {
   Future _scan() async {
     String barcode = await scanner.scan();
     setState(() => this.barcode = barcode);
-    if (hasBusiness == null) {
+    if (hasBusiness == false) {
       showDialog(
           barrierDismissible: false,
           context: context,
@@ -133,9 +133,8 @@ class _QuestionsState extends State<Questions> {
                 new FlatButton(
                     child: const Text('Try again'),
                     onPressed: () {
-                     
                       Navigator.pop(context);
-                       _scan();
+                      _scan();
                     })
               ],
             );
@@ -154,7 +153,7 @@ class _QuestionsState extends State<Questions> {
       setState(() {
         business = body;
         businessName = business["business"]["business_name"];
-        hasBusiness = business["business"];
+        hasBusiness = true;
         dateEntry = DateFormat('yyyy-MM-dd kk:mm:ss').format(now);
         businessId = business["business"]["id"].toString();
         userId = business["user"]["id"].toString();
@@ -162,11 +161,16 @@ class _QuestionsState extends State<Questions> {
         email = profile["email"];
         phoneNumber = profile["phone"];
       });
+    } else {
+      setState(() {
+        hasBusiness = false;
+      });
     }
     print(businessId);
     print(dateEntry);
     print(userId);
     print(hasBusiness);
+    print(business);
   }
 
   void _postTrace() async {
@@ -343,6 +347,7 @@ class _QuestionsState extends State<Questions> {
                     fontSize: 15.0,
                     color: Colors.black,
                   ),
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: "Email Address",
                     labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
@@ -469,7 +474,7 @@ class _QuestionsState extends State<Questions> {
                     // ),
                     hintStyle: TextStyle(
                       fontSize: 15.0,
-                      color: Colors.black,
+                      color: Colors.black54,
                     ),
                   ),
                   maxLines: 1,
@@ -518,7 +523,7 @@ class _QuestionsState extends State<Questions> {
                     // ),
                     hintStyle: TextStyle(
                       fontSize: 15.0,
-                      color: Colors.black,
+                      color: Colors.black54,
                     ),
                   ),
                   maxLines: 1,
@@ -567,7 +572,7 @@ class _QuestionsState extends State<Questions> {
                     // ),
                     hintStyle: TextStyle(
                       fontSize: 15.0,
-                      color: Colors.black,
+                      color: Colors.black54,
                     ),
                   ),
                   maxLines: 1,
@@ -616,7 +621,7 @@ class _QuestionsState extends State<Questions> {
                     // ),
                     hintStyle: TextStyle(
                       fontSize: 15.0,
-                      color: Colors.black,
+                      color: Colors.black54,
                     ),
                   ),
                   maxLines: 1,
@@ -665,7 +670,7 @@ class _QuestionsState extends State<Questions> {
                     // ),
                     hintStyle: TextStyle(
                       fontSize: 15.0,
-                      color: Colors.black,
+                      color: Colors.black54,
                     ),
                   ),
                   maxLines: 1,

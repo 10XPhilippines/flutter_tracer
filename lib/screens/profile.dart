@@ -111,8 +111,8 @@ class _ProfileState extends State<Profile> {
               child: new TextField(
                 autofocus: true,
                 decoration: new InputDecoration(
-                  labelText: 'Full Name',
-                  hintText: "Enter full name",
+                  labelText: 'Name',
+                  hintText: "Enter name",
                 ),
               ),
             )
