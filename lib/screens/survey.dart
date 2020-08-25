@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui';
+import 'package:flutter_tracer/widgets/badge.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
@@ -9,8 +11,6 @@ import 'package:flutter_tracer/network_utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_select/smart_select.dart';
 import 'package:flutter_tracer/screens/main_screen.dart';
-import 'package:steps_indicator/steps_indicator.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 
 class SurveyScreen extends StatefulWidget {
   @override
@@ -90,6 +90,13 @@ class _SurveyScreenState extends State<SurveyScreen> {
           "Contact Tracing",
         ),
         elevation: 0.0,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.save_alt),
+            onPressed: () {},
+            tooltip: "Save",
+          ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
@@ -101,28 +108,33 @@ class _SurveyScreenState extends State<SurveyScreen> {
               child: isDone
                   ? Image.memory(bytes)
                   : Center(
-                      child: CircularPercentIndicator(
-                        radius: 120.0,
-                        lineWidth: 15.0,
-                        animation: true,
-                        percent: 0.,
-                        center: new Text(
-                          "70.0%",
-                          style: new TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20.0),
+                      child: Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: ExactAssetImage('assets/tick.png'),
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                        circularStrokeCap: CircularStrokeCap.round,
-                        progressColor: Colors.redAccent,
                       ),
                     ),
             ),
             SizedBox(
               height: 20,
-              child: Text(
-                "Merchant will scan this code",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w300),
-              ),
+              child: isDone
+                  ? Text(
+                      "Merchant will scan this code",
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontSize: 10, fontWeight: FontWeight.w300),
+                    )
+                  : Text(
+                      "Please complete the survey",
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontSize: 10, fontWeight: FontWeight.w300),
+                    ),
             ),
             // SizedBox(
             //   height: 20,
