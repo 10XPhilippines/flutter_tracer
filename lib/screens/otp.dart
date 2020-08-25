@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:pinput/pin_put/pin_put.dart';
 import 'package:flutter_tracer/network_utils/api.dart';
+import 'package:pinput/pin_put/pin_put.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'main_screen.dart';
 
@@ -21,6 +21,7 @@ class _OtpState extends State<OtpScreen> {
 
   int otp;
   int userId;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -42,43 +43,101 @@ class _OtpState extends State<OtpScreen> {
 
     print(input);
 
-    var res = await Network().authData(input, '/verify');
-    var body = json.decode(res.body);
-    if (body['success']) {
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      localStorage.setString('token', json.encode(body['token']));
-      localStorage.setString('user', json.encode(body['user']));
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            return MainScreen();
-          },
-        ),
+    try {
+      var res = await Network().authData(input, '/verify');
+      var body = json.decode(res.body);
+      if (body['success']) {
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        localStorage.setString('token', json.encode(body['token']));
+        localStorage.setString('user', json.encode(body['user']));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              return MainScreen();
+            },
+          ),
+        );
+      }
+    } catch (e) {
+      print(e.toString());
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 5),
+        content: Container(
+            height: 40.0,
+            child: Center(
+              child: Text(
+                'Network is unreachable',
+                style: TextStyle(fontSize: 16.0),
+              ),
+            )),
+        backgroundColor: Colors.redAccent,
       );
+      Scaffold.of(_context).hideCurrentSnackBar();
+      Scaffold.of(_context).showSnackBar(snackBar);
     }
   }
 
   resendOtp() async {
+    setState(() {
+      _isLoading = true;
+    });
     var input = {'id': userId};
     print(input);
 
-    var res = await Network().authData(input, '/resend');
-    var body = json.decode(res.body);
-    if (body['success']) {
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      localStorage.setString('token', json.encode(body['token']));
-      localStorage.setString('user', json.encode(body['user']));
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      data = preferences.getString("user");
+    try {
+      var res = await Network().authData(input, '/resend');
+      var body = json.decode(res.body);
+      if (body['success']) {
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        localStorage.setString('token', json.encode(body['token']));
+        localStorage.setString('user', json.encode(body['user']));
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        data = preferences.getString("user");
+        setState(() {
+          profile = json.decode(data);
+          otp = int.parse(profile["otp"].toString());
+          userId = int.parse(profile["id"].toString());
+        });
+        print(profile);
+        print(otp);
+      }
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("OTP"),
+              content:
+                  Text("We've sent another verification code to your email."),
+              actions: <Widget>[
+                new FlatButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }),
+              ],
+            );
+          });
+      print(body);
       setState(() {
-        profile = json.decode(data);
-        otp = int.parse(profile["otp"].toString());
-        userId = int.parse(profile["id"].toString());
+        _isLoading = false;
       });
-      print(profile);
-      print(otp);
+    } catch (e) {
+      print(e.toString());
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 5),
+        content: Container(
+            height: 40.0,
+            child: Center(
+              child: Text(
+                'Network is unreachable',
+                style: TextStyle(fontSize: 16.0),
+              ),
+            )),
+        backgroundColor: Colors.redAccent,
+      );
+      Scaffold.of(_context).hideCurrentSnackBar();
+      Scaffold.of(_context).showSnackBar(snackBar);
     }
-    print(body);
   }
 
   getProfile() async {
@@ -101,22 +160,20 @@ class _OtpState extends State<OtpScreen> {
         getProfile();
       }
     } on SocketException catch (_) {
-      showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Network"),
-              content: Text("You are not connected to the internet."),
-              actions: <Widget>[
-                new FlatButton(
-                    child: const Text('OK'),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    })
-              ],
-            );
-          });
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 5),
+        content: Container(
+            height: 40.0,
+            child: Center(
+              child: Text(
+                'No connection',
+                style: TextStyle(fontSize: 16.0),
+              ),
+            )),
+        backgroundColor: Colors.redAccent,
+      );
+      Scaffold.of(_context).hideCurrentSnackBar();
+      Scaffold.of(_context).showSnackBar(snackBar);
     }
   }
 
@@ -163,13 +220,6 @@ class _OtpState extends State<OtpScreen> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
-          // leading: IconButton(
-          //   icon: Icon(
-          //     Icons.keyboard_backspace,
-          //     color: Colors.black87,
-          //   ),
-          //   onPressed: () => Navigator.pop(context),
-          // ),
           centerTitle: true,
           title: Text(
             "Verification",
@@ -214,19 +264,38 @@ class _OtpState extends State<OtpScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Image.asset(
-                      'assets/otp.jpg',
-                      height: 170.0,
+                      'assets/speed.png',
+                      height: 100.0,
                     ),
                   ]),
             ),
+            // Padding(
+            //   padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.stretch,
+            //     mainAxisSize: MainAxisSize.max,
+            //     mainAxisAlignment: MainAxisAlignment.start,
+            //     children: <Widget>[
+            //       Text(
+            //         "Hi, " +
+            //             profile["name"] + "!",
+            //         style: TextStyle(
+            //             color: Color.fromRGBO(25, 21, 99, 1),
+            //             fontWeight: FontWeight.w700),
+            //         textAlign: TextAlign.center,
+            //       ),
+            //     ],
+            //   ),
+            // ),
             Padding(
               padding: EdgeInsets.fromLTRB(0, 120, 0, 0),
               child: Center(
                   child: Text(
                 "Type the code we've sent to your email\n" + profile["email"],
                 style: TextStyle(
-                    color: Color.fromRGBO(25, 21, 99, 1),
-                    fontWeight: FontWeight.w700),
+                  color: Color.fromRGBO(25, 21, 99, 1),
+                  fontWeight: FontWeight.w700,
+                ),
                 textAlign: TextAlign.center,
               )),
             ),
@@ -258,24 +327,20 @@ class _OtpState extends State<OtpScreen> {
           //   onPressed: () => _pinPutController.text = '',
           // ),
           FlatButton(
-            child: Text("Didn't receive a code?"),
+            child: _isLoading
+                ? Center(
+                    child: SizedBox(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.white,
+                        strokeWidth: 2.0,
+                      ),
+                      height: 15.0,
+                      width: 15.0,
+                    ),
+                  )
+                : Text("Didn't receive a code?"),
             onPressed: () {
               resendOtp();
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text("OTP"),
-                      content: Text("We've sent another verification code to your email."),
-                      actions: <Widget>[
-                        new FlatButton(
-                            child: const Text('OK'),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            }),
-                      ],
-                    );
-                  });
             },
           )
         ],
