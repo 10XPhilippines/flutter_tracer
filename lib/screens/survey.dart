@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_select/smart_select.dart';
 import 'package:flutter_tracer/screens/main_screen.dart';
 import 'package:steps_indicator/steps_indicator.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class SurveyScreen extends StatefulWidget {
   @override
@@ -31,6 +32,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
   String travelHistory;
   String bodyPain;
   int indicator = 0;
+  bool isDone = false;
   var rawJson = ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7'];
 
   List<SmartSelectOption<String>> options = [
@@ -58,6 +60,12 @@ class _SurveyScreenState extends State<SurveyScreen> {
   Future _generateBarCode(String inputCode) async {
     Uint8List result = await scanner.generateBarCode(inputCode);
     this.setState(() => this.bytes = result);
+    if (indicator >= 7) {
+      setState(() {
+        isDone = true;
+      });
+    }
+    print("isDone = " + isDone.toString());
   }
 
   @override
@@ -90,12 +98,23 @@ class _SurveyScreenState extends State<SurveyScreen> {
           children: <Widget>[
             SizedBox(
               height: 190,
-              child: bytes.isEmpty
-                  ? Center(
-                      child: Text('No code generated.',
-                          style: TextStyle(color: Colors.black38)),
-                    )
-                  : Image.memory(bytes),
+              child: isDone
+                  ? Image.memory(bytes)
+                  : Center(
+                      child: CircularPercentIndicator(
+                        radius: 120.0,
+                        lineWidth: 15.0,
+                        animation: true,
+                        percent: 0.,
+                        center: new Text(
+                          "70.0%",
+                          style: new TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20.0),
+                        ),
+                        circularStrokeCap: CircularStrokeCap.round,
+                        progressColor: Colors.redAccent,
+                      ),
+                    ),
             ),
             SizedBox(
               height: 20,
