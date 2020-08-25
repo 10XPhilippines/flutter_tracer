@@ -15,9 +15,9 @@
 - [X] <s>Redirect to OTP screen if not verified (main.dart)</s>
 - [X] <s>Circular progress while fetching data (In button state)</s>
 - [X] <s>Validation textfield errorText not "null"</s>
-- [ ] Contact tracing feature can be use offline (save locally)
-- [ ] Latest survey should be fetch by merchants upon scanning user QR
-- [ ] Generate QR code based on survey (plus timestamps, with user ID) to be scanned by merchant (questions.dart)
+- [x] <s>Contact tracing feature can be use offline (save locally)</s>
+- [x] <s>Latest survey should be fetch by merchants upon scanning user QR</s>
+- [x] <s>Generate QR code based on survey (plus timestamps, with user ID) to be scanned by merchant (questions.dart)</s>
 
 ```diff
 ! Low Priority

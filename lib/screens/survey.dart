@@ -9,6 +9,7 @@ import 'package:flutter_tracer/network_utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_select/smart_select.dart';
 import 'package:flutter_tracer/screens/main_screen.dart';
+import 'package:steps_indicator/steps_indicator.dart';
 
 class SurveyScreen extends StatefulWidget {
   @override
@@ -29,7 +30,8 @@ class _SurveyScreenState extends State<SurveyScreen> {
   String exposure;
   String travelHistory;
   String bodyPain;
-  var rawJson = [];
+  int indicator = 0;
+  var rawJson = ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7'];
 
   List<SmartSelectOption<String>> options = [
     SmartSelectOption<String>(value: 'Yes', title: 'Yes'),
@@ -95,6 +97,34 @@ class _SurveyScreenState extends State<SurveyScreen> {
                     )
                   : Image.memory(bytes),
             ),
+            SizedBox(
+              height: 20,
+              child: Text(
+                "Merchant will scan this code",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w300),
+              ),
+            ),
+            // SizedBox(
+            //   height: 20,
+            // ),
+            // StepsIndicator(
+            //   selectedStep: indicator,
+            //   nbSteps: 7,
+            //   selectedStepColorOut: Colors.blue,
+            //   selectedStepColorIn: Colors.blue,
+            //   doneStepColor: Colors.blue,
+            //   unselectedStepColor: Colors.red,
+            //   doneLineColor: Colors.blue,
+            //   undoneLineColor: Colors.red,
+            //   isHorizontal: true,
+            //   lineLength: 40,
+            //   lineThickness: 1,
+            //   doneStepSize: 10,
+            //   unselectedStepSize: 10,
+            //   selectedStepSize: 10,
+            //   selectedStepBorderSize: 1,
+            // ),
             Container(
               alignment: Alignment.topLeft,
               margin: EdgeInsets.only(
@@ -120,6 +150,9 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 onChange: (val) => {
                       setState(() {
                         soreThroat = val;
+                        if (rawJson[2] == "Q1") {
+                          indicator += 1;
+                        }
                         if (rawJson.asMap().containsKey(2) == false) {
                           rawJson.insert(2, val);
                         } else {
@@ -140,6 +173,9 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 choiceType: SmartSelectChoiceType.radios,
                 onChange: (val) => {
                       setState(() {
+                        if (rawJson[3] == "Q2") {
+                          indicator += 1;
+                        }
                         headAche = val;
                         if (rawJson.asMap().containsKey(3) == false) {
                           rawJson.insert(3, val);
@@ -159,7 +195,23 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 options: options,
                 modalType: SmartSelectModalType.bottomSheet,
                 choiceType: SmartSelectChoiceType.radios,
-                onChange: (val) => setState(() => fever = val)),
+                onChange: (val) => {
+                      setState(() {
+                        if (rawJson[4] == "Q3") {
+                          indicator += 1;
+                        }
+                        fever = val;
+                        if (rawJson.asMap().containsKey(4) == false) {
+                          rawJson.insert(4, val);
+                        } else {
+                          rawJson.removeAt(4);
+                          rawJson.insert(4, val);
+                        }
+                        print(rawJson);
+                        print(rawJson.asMap().containsKey(4));
+                        _generateBarCode(rawJson.toString());
+                      })
+                    }),
             SizedBox(height: 10.0),
             SmartSelect<String>.single(
                 title: 'Do you have travel history?',
@@ -167,7 +219,23 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 options: options,
                 modalType: SmartSelectModalType.bottomSheet,
                 choiceType: SmartSelectChoiceType.radios,
-                onChange: (val) => setState(() => travelHistory = val)),
+                onChange: (val) => {
+                      setState(() {
+                        if (rawJson[5] == "Q4") {
+                          indicator += 1;
+                        }
+                        travelHistory = val;
+                        if (rawJson.asMap().containsKey(5) == false) {
+                          rawJson.insert(5, val);
+                        } else {
+                          rawJson.removeAt(5);
+                          rawJson.insert(5, val);
+                        }
+                        print(rawJson);
+                        print(rawJson.asMap().containsKey(5));
+                        _generateBarCode(rawJson.toString());
+                      })
+                    }),
             SizedBox(height: 10.0),
             SmartSelect<String>.single(
                 title: 'Do you have exposure?',
@@ -175,7 +243,23 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 options: options,
                 modalType: SmartSelectModalType.bottomSheet,
                 choiceType: SmartSelectChoiceType.radios,
-                onChange: (val) => setState(() => exposure = val)),
+                onChange: (val) => {
+                      setState(() {
+                        if (rawJson[6] == "Q5") {
+                          indicator += 1;
+                        }
+                        exposure = val;
+                        if (rawJson.asMap().containsKey(6) == false) {
+                          rawJson.insert(6, val);
+                        } else {
+                          rawJson.removeAt(6);
+                          rawJson.insert(6, val);
+                        }
+                        print(rawJson);
+                        print(rawJson.asMap().containsKey(6));
+                        _generateBarCode(rawJson.toString());
+                      })
+                    }),
             SizedBox(height: 10.0),
             SmartSelect<String>.single(
                 title: 'Do you have cough or colds?',
@@ -183,7 +267,23 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 options: options,
                 modalType: SmartSelectModalType.bottomSheet,
                 choiceType: SmartSelectChoiceType.radios,
-                onChange: (val) => setState(() => cough = val)),
+                onChange: (val) => {
+                      setState(() {
+                        if (rawJson[7] == "Q6") {
+                          indicator += 1;
+                        }
+                        cough = val;
+                        if (rawJson.asMap().containsKey(7) == false) {
+                          rawJson.insert(7, val);
+                        } else {
+                          rawJson.removeAt(7);
+                          rawJson.insert(7, val);
+                        }
+                        print(rawJson);
+                        print(rawJson.asMap().containsKey(7));
+                        _generateBarCode(rawJson.toString());
+                      })
+                    }),
             SizedBox(height: 10.0),
             SmartSelect<String>.single(
                 title: 'Do you have body pain?',
@@ -191,7 +291,23 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 options: options,
                 modalType: SmartSelectModalType.bottomSheet,
                 choiceType: SmartSelectChoiceType.radios,
-                onChange: (val) => setState(() => bodyPain = val)),
+                onChange: (val) => {
+                      setState(() {
+                        if (rawJson[8] == "Q7") {
+                          indicator += 1;
+                        }
+                        bodyPain = val;
+                        if (rawJson.asMap().containsKey(8) == false) {
+                          rawJson.insert(8, val);
+                        } else {
+                          rawJson.removeAt(8);
+                          rawJson.insert(8, val);
+                        }
+                        print(rawJson);
+                        print(rawJson.asMap().containsKey(8));
+                        _generateBarCode(rawJson.toString());
+                      })
+                    }),
             SizedBox(height: 80.0),
           ],
         ),
@@ -199,6 +315,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           print(rawJson);
+          print("indicator = " + indicator.toString());
         },
         label: Text('Save'),
         icon: Icon(Icons.check_circle),

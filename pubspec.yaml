@@ -32,6 +32,8 @@ dependencies:
   future_progress_dialog: ^0.1.1
   smart_select: ^3.0.3
   pinput: ^0.2.4
+  steps_indicator: ^1.0.1
+  step_progress_indicator: ^0.2.3+6
   
 
 dev_dependencies:
