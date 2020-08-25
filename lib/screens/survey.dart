@@ -339,19 +339,19 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         _generateBarCode(rawJson.toString());
                       })
                     }),
-            SizedBox(height: 80.0),
+            SizedBox(height: 40.0),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          print(rawJson);
-          print("indicator = " + indicator.toString());
-        },
-        label: Text('Save'),
-        icon: Icon(Icons.check_circle),
-        backgroundColor: Colors.pink,
-      ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   onPressed: () {
+      //     print(rawJson);
+      //     print("indicator = " + indicator.toString());
+      //   },
+      //   label: Text('Save'),
+      //   icon: Icon(Icons.check_circle),
+      //   backgroundColor: Colors.pink,
+      // ),
     );
   }
 }
