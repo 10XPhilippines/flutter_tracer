@@ -64,6 +64,23 @@ class _LoginScreenState extends State<LoginScreen> {
             },
           ),
         );
+      } else {
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Failed"),
+                content: Text("Invalid credentials. Try again."),
+                actions: <Widget>[
+                  new FlatButton(
+                      child: const Text('OK'),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      })
+                ],
+              );
+            });
       }
 
       print("Debug login");

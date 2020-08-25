@@ -12,6 +12,7 @@ import 'package:flutter_tracer/screens/search.dart';
 import 'package:flutter_tracer/util/const.dart';
 import 'package:flutter_tracer/widgets/badge.dart';
 import 'package:flutter_tracer/screens/questions.dart';
+import 'package:flutter_tracer/screens/survey.dart';
 import 'package:flutter_tracer/screens/otp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -73,7 +74,7 @@ class _MainScreenState extends State<MainScreen> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (BuildContext context) {
-                      return Questions();
+                      return SurveyScreen();
                     },
                   ),
                 );
