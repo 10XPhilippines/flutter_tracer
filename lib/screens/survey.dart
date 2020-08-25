@@ -120,7 +120,14 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 onChange: (val) => {
                       setState(() {
                         soreThroat = val;
-                        rawJson.insert(2, val);
+                        if (rawJson.asMap().containsKey(2) == false) {
+                          rawJson.insert(2, val);
+                        } else {
+                          rawJson.removeAt(2);
+                          rawJson.insert(2, val);
+                        }
+                        print(rawJson);
+                        print(rawJson.asMap().containsKey(2));
                         _generateBarCode(rawJson.toString());
                       })
                     }),
@@ -131,7 +138,20 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 options: options,
                 modalType: SmartSelectModalType.bottomSheet,
                 choiceType: SmartSelectChoiceType.radios,
-                onChange: (val) => setState(() => headAche = val)),
+                onChange: (val) => {
+                      setState(() {
+                        headAche = val;
+                        if (rawJson.asMap().containsKey(3) == false) {
+                          rawJson.insert(3, val);
+                        } else {
+                          rawJson.removeAt(3);
+                          rawJson.insert(3, val);
+                        }
+                        print(rawJson);
+                        print(rawJson.asMap().containsKey(3));
+                        _generateBarCode(rawJson.toString());
+                      })
+                    }),
             SizedBox(height: 10.0),
             SmartSelect<String>.single(
                 title: 'Do you have fever?',
