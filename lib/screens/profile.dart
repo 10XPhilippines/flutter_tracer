@@ -40,6 +40,9 @@ class _ProfileState extends State<Profile> {
   }
 
   resendOtp() async {
+    setState(() {
+      _isLoading = true;
+    });
     var input = {'id': userId};
     print(input);
     _checkIfConnected();
@@ -57,6 +60,9 @@ class _ProfileState extends State<Profile> {
             },
           ),
         );
+        setState(() {
+          _isLoading = false;
+        });
       }
     } else {
       final snackBar = SnackBar(
@@ -232,8 +238,7 @@ class _ProfileState extends State<Profile> {
                                   Icons.verified_user,
                                   color: Colors.green,
                                 )
-                              : Icon(Icons.verified_user,
-                                  color: Colors.red),
+                              : Icon(Icons.verified_user, color: Colors.red),
                         ],
                       ),
                       SizedBox(height: 5.0),
@@ -252,26 +257,40 @@ class _ProfileState extends State<Profile> {
                       SizedBox(height: 20.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          InkWell(
-                            onTap: () {
-                              resendOtp();
-                            },
-                            child:
-                                int.parse(profile["is_verified"].toString()) ==
-                                        0
-                                    ? Text(
-                                        "Tap to verify account",
-                                        style: TextStyle(
-                                          fontSize: 11.0,
-                                          fontWeight: FontWeight.w400,
-                                          color: Theme.of(context).accentColor,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      )
-                                    : Text(""),
-                          ),
-                        ],
+                        children: _isLoading
+                            ? <Widget>[
+                                Center(
+                                  child: SizedBox(
+                                    child: CircularProgressIndicator(
+                                      backgroundColor: Colors.white,
+                                      strokeWidth: 2.0,
+                                    ),
+                                    height: 15.0,
+                                    width: 15.0,
+                                  ),
+                                )
+                              ]
+                            : <Widget>[
+                                InkWell(
+                                  onTap: () {
+                                    resendOtp();
+                                  },
+                                  child: int.parse(profile["is_verified"]
+                                              .toString()) ==
+                                          0
+                                      ? Text(
+                                          "Tap to verify account",
+                                          style: TextStyle(
+                                            fontSize: 11.0,
+                                            fontWeight: FontWeight.w400,
+                                            color:
+                                                Theme.of(context).accentColor,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        )
+                                      : Text(""),
+                                ),
+                              ],
                       ),
                     ],
                   ),
