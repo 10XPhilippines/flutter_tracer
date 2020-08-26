@@ -26,6 +26,9 @@
 
 - [x] <s>User info</s>
 - [x] <s>Show user QR code</s>
+- [X] <s>Change email</s>
+- [ ] <s>Change password</s>
+- [ ] <s>Change display picture</s>
 - [ ] Update user info
 - [ ] Companion feature
 - [ ] User dashboard

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_tracer/screens/main_screen.dart';
-import 'package:flutter_tracer/screens/otp.dart';
+import 'package:flutter_tracer/screens/forgot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_tracer/network_utils/api.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
@@ -85,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               );
             });
-            print(body);
+        print(body);
       }
 
       print("Debug login");
@@ -128,40 +128,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     print('Debug OTP resend');
     print(userId);
-  }
-
-  _showDialog() async {
-    await showDialog<String>(
-      context: context,
-      child: new AlertDialog(
-        contentPadding: const EdgeInsets.all(16.0),
-        content: new Row(
-          children: <Widget>[
-            new Expanded(
-              child: new TextField(
-                autofocus: true,
-                decoration: new InputDecoration(
-                  labelText: 'Reset Password',
-                  hintText: "Enter your email",
-                ),
-              ),
-            )
-          ],
-        ),
-        actions: <Widget>[
-          new FlatButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-          new FlatButton(
-              child: const Text('Submit'),
-              onPressed: () {
-                Navigator.pop(context);
-              })
-        ],
-      ),
-    );
   }
 
   _checkIfConnected() async {
@@ -337,7 +303,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               onPressed: () {
-                _showDialog();
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      resendOtp();
+                      return ForgotScreen();
+                    },
+                  ),
+                );
               },
             ),
           ),

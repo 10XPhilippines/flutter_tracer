@@ -7,6 +7,7 @@ import 'package:flutter_tracer/providers/app_provider.dart';
 import 'package:flutter_tracer/screens/splash.dart';
 import 'package:flutter_tracer/screens/login.dart';
 import 'package:flutter_tracer/screens/otp.dart';
+import 'package:flutter_tracer/screens/change_email.dart';
 import 'package:flutter_tracer/util/const.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_tracer/network_utils/api.dart';
@@ -398,6 +399,15 @@ class _ProfileState extends State<Profile> {
             ),
             Divider(),
             ListTile(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return ChangeEmailScreen();
+                    },
+                  ),
+                );
+              },
               title: Text(
                 "Change email",
                 style: TextStyle(
@@ -408,9 +418,9 @@ class _ProfileState extends State<Profile> {
               subtitle: Text(
                 'Update your email',
               ),
-              trailing: Text(
-                'Edit',
-              ),
+              // trailing: Text(
+              //   'Edit',
+              // ),
             ),
             ListTile(
               title: Text(
@@ -423,9 +433,9 @@ class _ProfileState extends State<Profile> {
               subtitle: Text(
                 'Update your password',
               ),
-              trailing: Text(
-                'Edit',
-              ),
+              // trailing: Text(
+              //   'Edit',
+              // ),
             ),
             Divider(),
             ListTile(
