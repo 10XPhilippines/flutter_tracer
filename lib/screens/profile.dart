@@ -230,50 +230,28 @@ class _ProfileState extends State<Profile> {
                         children: <Widget>[
                           InkWell(
                             onTap: () {
-                              showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
                                   builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text("Logout"),
-                                      content: Text("You are about to logout."),
-                                      actions: <Widget>[
-                                        new FlatButton(
-                                            child: const Text('Cancel'),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            }),
-                                        new FlatButton(
-                                            child: _isLoading
-                                                ? Center(
-                                                    child: SizedBox(
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                        backgroundColor:
-                                                            Colors.white,
-                                                        strokeWidth: 2.0,
-                                                      ),
-                                                      height: 15.0,
-                                                      width: 15.0,
-                                                    ),
-                                                  )
-                                                : const Text('Logout'),
-                                            onPressed: () {
-                                              logout();
-                                            })
-                                      ],
-                                    );
-                                  });
+                                    resendOtp();
+                                    return OtpScreen();
+                                  },
+                                ),
+                              );
                             },
-                            child: Text(
-                              "Logout",
-                              style: TextStyle(
-                                fontSize: 13.0,
-                                fontWeight: FontWeight.w400,
-                                color: Theme.of(context).accentColor,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                            child:
+                                int.parse(profile["is_verified"].toString()) ==
+                                        0
+                                    ? Text(
+                                        "Tap to verify account",
+                                        style: TextStyle(
+                                          fontSize: 11.0,
+                                          fontWeight: FontWeight.w400,
+                                          color: Theme.of(context).accentColor,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      )
+                                    : Text(""),
                           ),
                         ],
                       ),
@@ -307,37 +285,6 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
             ),
-
-            Padding(
-              padding: EdgeInsets.all(0.0),
-              child: ListTile(
-                title: Text(
-                  "Account Information".toUpperCase(),
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                trailing: IconButton(
-                  icon: Icon(
-                    Icons.mode_edit,
-                    size: 20.0,
-                  ),
-                  onPressed: () {
-                    _showDialog();
-                  },
-                  tooltip: "Edit",
-                ),
-              ),
-            ),
-
-            // int.parse(profile["is_verified"].toString()) == 1
-            //     ? ListTile(
-            //         subtitle: Text(
-            //           profile["is_verified"] ?? "No data available",
-            //         ),
-            //       )
-            //     : "",
 
             ListTile(
               title: Text(
@@ -455,8 +402,67 @@ class _ProfileState extends State<Profile> {
               subtitle: Text(
                 'App settings',
               ),
-              trailing: Icon(
-                Icons.settings,
+              trailing: IconButton(
+                icon: Icon(
+                  Icons.settings,
+                  size: 20.0,
+                ),
+                onPressed: () {},
+              ),
+            ),
+            Divider(),
+            ListTile(
+              title: Text(
+                "Logout",
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              subtitle: Text(
+                'Logout to your account',
+              ),
+              trailing: IconButton(
+                icon: Icon(
+                  Icons.exit_to_app,
+                  color: Colors.redAccent,
+                  size: 20.0,
+                ),
+                onPressed: () {
+                  showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Logout"),
+                          content: Text("You are about to logout."),
+                          actions: <Widget>[
+                            new FlatButton(
+                                child: const Text('Cancel'),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                }),
+                            new FlatButton(
+                                child: _isLoading
+                                    ? Center(
+                                        child: SizedBox(
+                                          child: CircularProgressIndicator(
+                                            backgroundColor: Colors.white,
+                                            strokeWidth: 2.0,
+                                          ),
+                                          height: 15.0,
+                                          width: 15.0,
+                                        ),
+                                      )
+                                    : const Text('Logout'),
+                                onPressed: () {
+                                  logout();
+                                })
+                          ],
+                        );
+                      });
+                },
+                tooltip: "Edit",
               ),
             ),
 
