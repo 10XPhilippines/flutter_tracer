@@ -4,11 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Network{
 
-  // final String _url = 'http://dev.10xphilippines.com/api/individual';
-  // final String _baseUrl = 'http://dev.10xphilippines.com';
+  final String _url = 'http://api.10xphilippines.com/public/api/individual';
+  final String _baseUrl = 'http://api.10xphilippines.com';
 
-  final String _url = 'http://192.168.1.151:8000/api/individual';
-  final String _baseUrl = 'http://192.168.1.151:8000';
+  // final String _url = 'http://192.168.1.151:8000/api/individual';
+  // final String _baseUrl = 'http://192.168.1.151:8000';
+  
   var token;
 
   _getToken() async {
