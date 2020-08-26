@@ -24,12 +24,15 @@ class _ProfileState extends State<Profile> {
   bool hasConnection = false;
   String path;
   BuildContext _context;
+  bool _isLoading = false;
+  String userType;
 
   getProfile() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     data = preferences.getString("user");
     setState(() {
       profile = json.decode(data);
+      userType = profile["user_type"];
       isVerified = int.parse(profile["is_verified"].toString());
       userId = int.parse(profile["id"].toString());
       path = Network().qrCode() + "/code/" + profile["user_barcode_path"];
@@ -49,9 +52,12 @@ class _ProfileState extends State<Profile> {
   }
 
   void logout() async {
-    var res = await Network().getData('/logout');
-    var body = json.decode(res.body);
+    setState(() {
+      _isLoading = true;
+    });
     try {
+      var res = await Network().getData('/logout');
+      var body = json.decode(res.body);
       if (body['success']) {
         SharedPreferences localStorage = await SharedPreferences.getInstance();
         localStorage.remove('user');
@@ -64,8 +70,28 @@ class _ProfileState extends State<Profile> {
           ),
         );
       }
+      setState(() {
+        _isLoading = false;
+      });
     } catch (e) {
       print(e.toString());
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 5),
+        content: Container(
+            height: 40.0,
+            child: Center(
+              child: Text(
+                'Network is unreachable',
+                style: TextStyle(fontSize: 16.0),
+              ),
+            )),
+        backgroundColor: Colors.redAccent,
+      );
+      Scaffold.of(_context).hideCurrentSnackBar();
+      Scaffold.of(_context).showSnackBar(snackBar);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -218,7 +244,20 @@ class _ProfileState extends State<Profile> {
                                               Navigator.pop(context);
                                             }),
                                         new FlatButton(
-                                            child: const Text('Logout'),
+                                            child: _isLoading
+                                                ? Center(
+                                                    child: SizedBox(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        strokeWidth: 2.0,
+                                                      ),
+                                                      height: 15.0,
+                                                      width: 15.0,
+                                                    ),
+                                                  )
+                                                : const Text('Logout'),
                                             onPressed: () {
                                               logout();
                                             })
@@ -269,6 +308,37 @@ class _ProfileState extends State<Profile> {
               ),
             ),
 
+            Padding(
+              padding: EdgeInsets.all(0.0),
+              child: ListTile(
+                title: Text(
+                  "Account Information".toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                trailing: IconButton(
+                  icon: Icon(
+                    Icons.mode_edit,
+                    size: 20.0,
+                  ),
+                  onPressed: () {
+                    _showDialog();
+                  },
+                  tooltip: "Edit",
+                ),
+              ),
+            ),
+
+            // int.parse(profile["is_verified"].toString()) == 1
+            //     ? ListTile(
+            //         subtitle: Text(
+            //           profile["is_verified"] ?? "No data available",
+            //         ),
+            //       )
+            //     : "",
+
             ListTile(
               title: Text(
                 "Name",
@@ -303,6 +373,19 @@ class _ProfileState extends State<Profile> {
               ),
               subtitle: Text(
                 profile["phone"] ?? "No data available",
+              ),
+            ),
+            ListTile(
+              title: Text(
+                "Type",
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              subtitle: Text(
+                userType[0].toUpperCase() + userType.substring(1) ??
+                    "No data available",
               ),
             ),
             ListTile(

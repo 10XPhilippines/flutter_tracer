@@ -26,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   BuildContext _context;
   String responseName = "Enter your name";
   String responsePassword = "Enter your password";
+  String message;
 
   Future getFuture() {
     return Future(() async {
@@ -65,13 +66,16 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
       } else {
+        setState(() {
+          message = body['message'];
+        });
         showDialog(
             barrierDismissible: false,
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text("Failed"),
-                content: Text("Invalid credentials. Try again."),
+                content: Text(message),
                 actions: <Widget>[
                   new FlatButton(
                       child: const Text('OK'),
@@ -81,6 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               );
             });
+            print(body);
       }
 
       print("Debug login");
