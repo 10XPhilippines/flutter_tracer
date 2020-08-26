@@ -42,12 +42,37 @@ class _ProfileState extends State<Profile> {
   resendOtp() async {
     var input = {'id': userId};
     print(input);
+    _checkIfConnected();
 
-    var res = await Network().authData(input, '/resend');
-    var body = json.decode(res.body);
-    if (body['success']) {
-      print('Debug OTP resend');
-      print(userId);
+    if (hasConnection == true) {
+      var res = await Network().authData(input, '/resend');
+      var body = json.decode(res.body);
+      if (body['success']) {
+        print('Debug OTP resend');
+        print(userId);
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              return OtpScreen();
+            },
+          ),
+        );
+      }
+    } else {
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 5),
+        content: Container(
+            height: 40.0,
+            child: Center(
+              child: Text(
+                'Network is unreachable',
+                style: TextStyle(fontSize: 16.0),
+              ),
+            )),
+        backgroundColor: Colors.redAccent,
+      );
+      Scaffold.of(_context).hideCurrentSnackBar();
+      Scaffold.of(_context).showSnackBar(snackBar);
     }
   }
 
@@ -205,10 +230,10 @@ class _ProfileState extends State<Profile> {
                           int.parse(profile["is_verified"].toString()) == 1
                               ? Icon(
                                   Icons.verified_user,
-                                  color: Colors.greenAccent,
+                                  color: Colors.green,
                                 )
                               : Icon(Icons.verified_user,
-                                  color: Colors.redAccent),
+                                  color: Colors.red),
                         ],
                       ),
                       SizedBox(height: 5.0),
@@ -230,14 +255,7 @@ class _ProfileState extends State<Profile> {
                         children: <Widget>[
                           InkWell(
                             onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                    resendOtp();
-                                    return OtpScreen();
-                                  },
-                                ),
-                              );
+                              resendOtp();
                             },
                             child:
                                 int.parse(profile["is_verified"].toString()) ==
