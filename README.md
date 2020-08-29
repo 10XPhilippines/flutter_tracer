@@ -36,4 +36,4 @@
 - [ ] Business search
 
 ## 🔖 LICENCE
-[Apache-2.0](https://github.com/JideGuru/FlutterEbookApp/blob/master/LICENSE)
+[Apache-2.0](https://github.com/isaacdarcilla/flutter_merchants/blob/master/LICENSE)
