@@ -18,6 +18,7 @@
 - [x] <s>Contact tracing feature can be use offline (save locally)</s>
 - [x] <s>Latest survey should be fetch by merchants upon scanning user QR</s>
 - [x] <s>Generate QR code based on survey (plus timestamps, with user ID) to be scanned by merchant (questions.dart)</s>
+- [ ] Add visited establishments
 - [ ] Social sign in
 
 ```diff
