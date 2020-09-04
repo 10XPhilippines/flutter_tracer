@@ -10,7 +10,7 @@ import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:flutter_tracer/network_utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_select/smart_select.dart';
-import 'package:flutter_tracer/screens/main_screen.dart';
+import 'package:flutter_tracer/screens/visits.dart';
 
 class SurveyScreen extends StatefulWidget {
   @override
@@ -91,7 +91,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,  
+      key: _scaffoldKey,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -107,8 +107,16 @@ class _SurveyScreenState extends State<SurveyScreen> {
         elevation: 0.0,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.save_alt),
-            onPressed: () {},
+            icon: Icon(Icons.history),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return VisitScreen();
+                  },
+                ),
+              );
+            },
             tooltip: "Save",
           ),
         ],
