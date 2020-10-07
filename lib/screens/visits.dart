@@ -183,7 +183,7 @@ class _VisitScreenState extends State<VisitScreen> {
                     ),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 15,
                   ),
                   history.length != 0
                       ? ListView.builder(
@@ -199,7 +199,7 @@ class _VisitScreenState extends State<VisitScreen> {
                                 ),
                               ),
                               subtitle: Text(
-                                '${history[index]["business_city_location"]}, ${history[index]["business_province_location"]}\nVisited on ${history[index]["trace_date_time_entry"]}',
+                                '${history[index]["business_city_location"]}, ${history[index]["business_province_location"]}\nVisited on ${history[index]["trace_date_time_entry"]}\n',
                               ),
                             );
                           },

@@ -433,46 +433,46 @@ class _ProfileState extends State<Profile> {
                       profile["sex"] ?? "No data available",
                     ),
                   ),
-                  Divider(),
-                  ListTile(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return ChangeEmailScreen();
-                          },
-                        ),
-                      );
-                    },
-                    title: Text(
-                      "Change email",
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    subtitle: Text(
-                      'Update your email',
-                    ),
-                    // trailing: Text(
-                    //   'Edit',
-                    // ),
-                  ),
-                  ListTile(
-                    title: Text(
-                      "Change password",
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    subtitle: Text(
-                      'Update your password',
-                    ),
-                    // trailing: Text(
-                    //   'Edit',
-                    // ),
-                  ),
+                  // Divider(),
+                  // ListTile(
+                  //   onTap: () {
+                  //     Navigator.of(context).push(
+                  //       MaterialPageRoute(
+                  //         builder: (BuildContext context) {
+                  //           return ChangeEmailScreen();
+                  //         },
+                  //       ),
+                  //     );
+                  //   },
+                  //   title: Text(
+                  //     "Change email",
+                  //     style: TextStyle(
+                  //       fontSize: 17,
+                  //       fontWeight: FontWeight.w700,
+                  //     ),
+                  //   ),
+                  //   subtitle: Text(
+                  //     'Update your email',
+                  //   ),
+                  //   // trailing: Text(
+                  //   //   'Edit',
+                  //   // ),
+                  // ),
+                  // ListTile(
+                  //   title: Text(
+                  //     "Change password",
+                  //     style: TextStyle(
+                  //       fontSize: 17,
+                  //       fontWeight: FontWeight.w700,
+                  //     ),
+                  //   ),
+                  //   subtitle: Text(
+                  //     'Update your password',
+                  //   ),
+                  //   // trailing: Text(
+                  //   //   'Edit',
+                  //   // ),
+                  // ),
                   
                   // ListTile(
                   //   onTap: () {
@@ -632,38 +632,38 @@ class _ProfileState extends State<Profile> {
                 ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  content: hasConnection
-                      ? Image.network(path)
-                      : Text(
-                          "Unable to fetch code. There is no internet connection.",
-                          textAlign: TextAlign.center,
-                        ),
-                  actions: <Widget>[
-                    new FlatButton(
-                        child: const Text('Export'),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
-                    new FlatButton(
-                        child: const Text('Close'),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        })
-                  ],
-                );
-              });
-        },
-        label: Text('My QR'),
-        icon: Icon(Icons.camera),
-        backgroundColor: Colors.pink,
-      ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   onPressed: () {
+      //     showDialog(
+      //         barrierDismissible: false,
+      //         context: context,
+      //         builder: (BuildContext context) {
+      //           return AlertDialog(
+      //             content: hasConnection
+      //                 ? Image.network(path)
+      //                 : Text(
+      //                     "Unable to fetch code. There is no internet connection.",
+      //                     textAlign: TextAlign.center,
+      //                   ),
+      //             actions: <Widget>[
+      //               new FlatButton(
+      //                   child: const Text('Export'),
+      //                   onPressed: () {
+      //                     Navigator.pop(context);
+      //                   }),
+      //               new FlatButton(
+      //                   child: const Text('Close'),
+      //                   onPressed: () {
+      //                     Navigator.pop(context);
+      //                   })
+      //             ],
+      //           );
+      //         });
+      //   },
+      //   label: Text('My QR'),
+      //   icon: Icon(Icons.camera),
+      //   backgroundColor: Colors.pink,
+      // ),
     );
   }
 }

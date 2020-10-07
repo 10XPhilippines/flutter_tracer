@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter_tracer/widgets/badge.dart';
@@ -34,6 +35,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
   String bodyPain;
   int indicator = 0;
   bool isDone = false;
+  int companionId;
   var rawJson = ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7'];
 
   List<SmartSelectOption<String>> options = [
@@ -52,9 +54,13 @@ class _SurveyScreenState extends State<SurveyScreen> {
       dateEntry = DateFormat('yyyy-MM-dd kk:mm:ss').format(now);
       rawJson.insert(0, userId);
       rawJson.insert(1, dateEntry);
+      var number = new Random();
+      companionId = number.nextInt(900000) + 100000;
+      rawJson.insert(9, companionId.toString());
     });
     print(data);
     print(rawJson);
+    print(companionId);
     _generateBarCode(rawJson.toString());
   }
 
@@ -80,6 +86,57 @@ class _SurveyScreenState extends State<SurveyScreen> {
       _scaffoldKey.currentState.showSnackBar(snackBar);
     }
     print("isDone = " + isDone.toString());
+  }
+
+  addCompanion() async {
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Column(
+          children: <Widget>[
+            new Container(
+              alignment: Alignment.topLeft,
+              margin: EdgeInsets.only(
+                top: 12.0,
+                left: 0.0,
+                right: 0.0,
+              ),
+              child: Text(
+                "Companion",
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black45,
+                ),
+              ),
+            ),
+            new TextField(
+              autofocus: false,
+              decoration: new InputDecoration(
+                  labelText: 'First Name', hintText: 'Enter companion first name'),
+            ),
+            new TextField(
+              autofocus: false,
+              decoration: new InputDecoration(
+                  labelText: 'Last Name', hintText: 'Enter companion last name'),
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text('Add'),
+              onPressed: () {
+                Navigator.pop(context);
+              })
+        ],
+      ),
+    );
   }
 
   @override
@@ -183,7 +240,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
               alignment: Alignment.topLeft,
               margin: EdgeInsets.only(
                 top: 25.0,
-                left: 10.0,
+                left: 12.0,
               ),
               child: Text(
                 "Required Questions",
@@ -194,6 +251,23 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 ),
               ),
             ),
+            Container(
+              alignment: Alignment.topLeft,
+              margin: EdgeInsets.only(
+                top: 20.0,
+                left: 12.0,
+                right: 12.0,
+              ),
+              child: Text(
+                "All information submitted shall be encrypted, and strictly used only in compliance to the Philippine law, guidelines, and ordinances, in relation to business operation in light of COVID-19 responses.",
+                style: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black45,
+                ),
+              ),
+            ),
+
             SizedBox(height: 10.0),
             SmartSelect<String>.single(
                 title: 'Do you have sore throat?',
@@ -362,19 +436,16 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         _generateBarCode(rawJson.toString());
                       })
                     }),
-            SizedBox(height: 40.0),
+            SizedBox(height: 80.0),
           ],
         ),
       ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   onPressed: () {
-      //     print(rawJson);
-      //     print("indicator = " + indicator.toString());
-      //   },
-      //   label: Text('Save'),
-      //   icon: Icon(Icons.check_circle),
-      //   backgroundColor: Colors.pink,
-      // ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: isDone ? () => addCompanion() : null,
+        label: Text('Add Companion'),
+        icon: Icon(Icons.add),
+        backgroundColor: isDone ? Colors.pink : Colors.grey,
+      ),
     );
   }
 }
