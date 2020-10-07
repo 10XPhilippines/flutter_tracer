@@ -36,6 +36,14 @@ class _SurveyScreenState extends State<SurveyScreen> {
   int indicator = 0;
   bool isDone = false;
   int companionId;
+  String companionFirstName;
+  String companionLastName;
+  String companionProvince;
+  String companionCity;
+  String companionStreet;
+  String companionPhoneNumber;
+  String companionTemperature;
+  String companionBarangay;
   var rawJson = ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7'];
 
   List<SmartSelectOption<String>> options = [
@@ -62,6 +70,31 @@ class _SurveyScreenState extends State<SurveyScreen> {
     print(rawJson);
     print(companionId);
     _generateBarCode(rawJson.toString());
+  }
+
+  Future submitCompanion() async {
+    var data = {
+      'companion_first_name': companionFirstName,
+      'companion_last_name': companionLastName,
+      'companion_street': companionStreet,
+      'companion_barangay': companionBarangay,
+      'companion_municipality': companionCity,
+      'companion_province': companionProvince,
+      'companion_temperature': companionTemperature,
+      'companion_contact_number': companionPhoneNumber,
+    };
+    print(data);
+    try {
+      var res = await Network().authData(data, '/add_companion');
+      var body = json.decode(res.body);
+      if (body['success'] == true) {
+        Navigator.pop(context);
+      } else {
+        print(body["message"]);
+      }
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future _generateBarCode(String inputCode) async {
@@ -93,12 +126,13 @@ class _SurveyScreenState extends State<SurveyScreen> {
       context: context,
       child: new AlertDialog(
         contentPadding: const EdgeInsets.all(16.0),
-        content: new Column(
-          children: <Widget>[
+        content: new SingleChildScrollView(
+          child: Column(children: <Widget>[
             new Container(
               alignment: Alignment.topLeft,
               margin: EdgeInsets.only(
                 top: 12.0,
+                bottom: 12.0,
                 left: 0.0,
                 right: 0.0,
               ),
@@ -111,17 +145,282 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 ),
               ),
             ),
+            SizedBox(height: 20.0),
             new TextField(
-              autofocus: false,
-              decoration: new InputDecoration(
-                  labelText: 'First Name', hintText: 'Enter companion first name'),
+              textInputAction: TextInputAction.next,
+              autofocus: true,
+              onChanged: (value) {
+                companionFirstName = value;
+              },
+              decoration: InputDecoration(
+                labelText: "First Name",
+                labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                contentPadding: EdgeInsets.all(10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                hintText: "Enter companion first name",
+                // prefixIcon: Icon(
+                //   Icons.perm_identity,
+                //   color: Colors.black,
+                // ),
+                hintStyle: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.black54,
+                ),
+              ),
             ),
+            SizedBox(height: 15.0),
             new TextField(
+              textInputAction: TextInputAction.next,
               autofocus: false,
-              decoration: new InputDecoration(
-                  labelText: 'Last Name', hintText: 'Enter companion last name'),
+              onChanged: (value) {
+                companionLastName = value;
+              },
+              decoration: InputDecoration(
+                labelText: "Last Name",
+                labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                contentPadding: EdgeInsets.all(10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                hintText: "Enter companion last name",
+                // prefixIcon: Icon(
+                //   Icons.perm_identity,
+                //   color: Colors.black,
+                // ),
+                hintStyle: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.black54,
+                ),
+              ),
             ),
-          ],
+            SizedBox(height: 15.0),
+            new TextField(
+              textInputAction: TextInputAction.next,
+              autofocus: false,
+              onChanged: (value) {
+               companionProvince = value;
+              },
+              decoration: InputDecoration(
+                labelText: "Province",
+                labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                contentPadding: EdgeInsets.all(10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                hintText: "Enter companion province",
+                // prefixIcon: Icon(
+                //   Icons.perm_identity,
+                //   color: Colors.black,
+                // ),
+                hintStyle: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.black54,
+                ),
+              ),
+            ),
+            SizedBox(height: 15.0),
+            new TextField(
+              textInputAction: TextInputAction.next,
+              autofocus: false,
+              onChanged: (value) {
+                companionCity = value;
+              },
+              decoration: InputDecoration(
+                labelText: "City / Municipality",
+                labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                contentPadding: EdgeInsets.all(10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                hintText: "Enter companion municipality",
+                // prefixIcon: Icon(
+                //   Icons.perm_identity,
+                //   color: Colors.black,
+                // ),
+                hintStyle: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.black54,
+                ),
+              ),
+            ),
+            SizedBox(height: 15.0),
+            new TextField(
+              textInputAction: TextInputAction.next,
+              autofocus: false,
+              onChanged: (value) {
+                companionBarangay = value;
+              },
+              decoration: InputDecoration(
+                labelText: "Barangay",
+                labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                contentPadding: EdgeInsets.all(10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                hintText: "Enter companion barangay",
+                // prefixIcon: Icon(
+                //   Icons.perm_identity,
+                //   color: Colors.black,
+                // ),
+                hintStyle: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.black54,
+                ),
+              ),
+            ),
+            SizedBox(height: 15.0),
+            new TextField(
+              textInputAction: TextInputAction.next,
+              autofocus: false,
+              onChanged: (value) {
+                companionStreet = value;
+              },
+              decoration: InputDecoration(
+                labelText: "House Unit / Street",
+                labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                contentPadding: EdgeInsets.all(10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                hintText: "Enter companion house unit or street",
+                // prefixIcon: Icon(
+                //   Icons.perm_identity,
+                //   color: Colors.black,
+                // ),
+                hintStyle: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.black54,
+                ),
+              ),
+            ),
+            SizedBox(height: 15.0),
+            new TextField(
+              textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.phone,
+              autofocus: false,
+              onChanged: (value) {
+                companionPhoneNumber = value;
+              },
+              controller: TextEditingController(text: "+63"),
+              decoration: InputDecoration(
+                labelText: "Phone Number",
+                labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                contentPadding: EdgeInsets.all(10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                hintText: "Enter companion phone number",
+                // prefixIcon: Icon(
+                //   Icons.perm_identity,
+                //   color: Colors.black,
+                // ),
+                hintStyle: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.black54,
+                ),
+              ),
+            ),
+            SizedBox(height: 15.0),
+            new TextField(
+              textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.number,
+              autofocus: false,
+              onChanged: (value) {
+                companionTemperature = value;
+              },
+              decoration: InputDecoration(
+                labelText: "Temperature",
+                labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                contentPadding: EdgeInsets.all(10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                hintText: "Enter companion temperature",
+                // prefixIcon: Icon(
+                //   Icons.perm_identity,
+                //   color: Colors.black,
+                // ),
+                hintStyle: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.black54,
+                ),
+              ),
+            ),
+          ]),
         ),
         actions: <Widget>[
           new FlatButton(
@@ -130,9 +429,9 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 Navigator.pop(context);
               }),
           new FlatButton(
-              child: const Text('Add'),
+              child: const Text('Add Companion'),
               onPressed: () {
-                Navigator.pop(context);
+                submitCompanion();
               })
         ],
       ),
@@ -441,7 +740,8 @@ class _SurveyScreenState extends State<SurveyScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: isDone ? () => addCompanion() : null,
+        // onPressed: isDone ? () => addCompanion() : null,
+        onPressed: () => addCompanion(),
         label: Text('Add Companion'),
         icon: Icon(Icons.add),
         backgroundColor: isDone ? Colors.pink : Colors.grey,
