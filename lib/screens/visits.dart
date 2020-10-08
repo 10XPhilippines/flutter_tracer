@@ -16,12 +16,14 @@ class _VisitScreenState extends State<VisitScreen> {
   Uint8List bytes = Uint8List(0);
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = false;
+  bool _isLoading2 = false;
   bool hasConnection = false;
   Map business = {};
   bool defaultBusiness;
   int defaultMerchant;
   String merchant;
   List history = [];
+  List companion = [];
   String data;
   String picked;
   int userId;
@@ -45,6 +47,127 @@ class _VisitScreenState extends State<VisitScreen> {
     });
     getVisits();
     print(userId.toString());
+  }
+
+  getCompanion(String companionId) async {
+    debugPrint("Get companion");
+    setState(() {
+      _isLoading2 = true;
+    });
+    try {
+      var res = await Network().getData('/get_companion_by_id/' + companionId);
+      var body = json.decode(res.body);
+      if (body['success']) {
+        setState(() {
+          _isLoading2 = false;
+          companion = body["companion"];
+        });
+        print(companion);
+        print(_isLoading2);
+      } else {
+        setState(() {
+          _isLoading2 = false;
+        });
+        final snackBar = SnackBar(
+          duration: Duration(seconds: 2),
+          content: Container(
+              height: 40.0,
+              child: Center(
+                child: Text(
+                  "Unable to fetch data",
+                  style: TextStyle(fontSize: 16.0),
+                  textAlign: TextAlign.center,
+                ),
+              )),
+          backgroundColor: Colors.redAccent,
+        );
+        _scaffoldKey.currentState.showSnackBar(snackBar);
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading2 = false;
+      });
+    }
+    setState(() {
+      _isLoading = false;
+    });
+    showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+      ),
+      context: context,
+      builder: (builder) {
+        return new Container(
+          height: 200.0,
+          color: Colors.transparent,
+          child: _isLoading2
+              ? Center(
+                  child: SizedBox(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.white,
+                      strokeWidth: 2.0,
+                    ),
+                    height: 15.0,
+                    width: 15.0,
+                  ),
+                )
+              : Container(
+                  alignment: Alignment.topLeft,
+                  margin: EdgeInsets.only(
+                    left: 20.0,
+                    top: 20.0,
+                    right: 20.0,
+                  ),
+                  child: ListView(children: <Widget>[
+                    companion.length != 0
+                        ? ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: companion == null ? 0 : companion.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return new ListTile(
+                                title: Text(
+                                  companion[index]["companion_first_name"] +
+                                      ' ' +
+                                      companion[index]["companion_last_name"],
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              );
+                            })
+                        : Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: ListView(
+                                shrinkWrap: true,
+                                children: <Widget>[
+                                  Image.asset(
+                                    'assets/empty.png',
+                                    height: 100,
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    "Such an empty!",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                  ]),
+                ),
+        );
+      },
+    );
   }
 
   getVisits() async {
@@ -98,6 +221,9 @@ class _VisitScreenState extends State<VisitScreen> {
       );
       _scaffoldKey.currentState.showSnackBar(snackBar);
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   _checkIfConnected() async {
@@ -172,10 +298,11 @@ class _VisitScreenState extends State<VisitScreen> {
                     alignment: Alignment.topLeft,
                     margin: EdgeInsets.only(
                       top: 25.0,
-                      left: 10.0,
+                      left: 12.0,
+                      right: 12.0,
                     ),
                     child: Text(
-                      "List of your visited establishments.",
+                      "List of your visited establishments. Tap to view companion.",
                       style: TextStyle(
                           fontSize: 15.0,
                           fontWeight: FontWeight.w500,
@@ -201,12 +328,17 @@ class _VisitScreenState extends State<VisitScreen> {
                               subtitle: Text(
                                 '${history[index]["business_city_location"]}, ${history[index]["business_province_location"]}\nVisited on ${history[index]["trace_date_time_entry"]}\n',
                               ),
+                              onTap: () {
+                                print(history[index]["tracers_companion_code"]);
+                                getCompanion(
+                                    history[index]["tracers_companion_code"]);
+                              },
                             );
                           },
                         )
                       : Center(
                           child: Padding(
-                            padding: EdgeInsets.all(100),
+                            padding: EdgeInsets.all(10),
                             child: ListView(
                               shrinkWrap: true,
                               children: <Widget>[

@@ -47,6 +47,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
   String companionTemperature;
   String companionBarangay;
   String e1, e2, e3, e4, e5, e6, e7, e8;
+  String b, m, p, s, pn;
   bool hasAddress;
   var rawJson = ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7'];
 
@@ -73,10 +74,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
     getUserData();
 
-    if (hasAddress == true) {
-      updateAddress();
-    }
-
     print(rawJson);
     print(companionId);
     _generateBarCode(rawJson.toString());
@@ -93,10 +90,80 @@ class _SurveyScreenState extends State<SurveyScreen> {
         body["user"]["phone"] == null) {
       setState(() {
         hasAddress = false;
+        b = body["user"]["barangay"];
+        p = body["user"]["province"];
+        m = body["user"]["city"];
+        s = body["user"]["street"];
+        pn = body["user"]["phone"];
       });
     } else {
       setState(() {
         hasAddress = true;
+      });
+    }
+
+    if (hasAddress == false) {
+      updateAddress();
+    }
+  }
+
+  Future submitAddress() async {
+    setState(() {
+      _isLoading = true;
+    });
+    var data = {
+      'user_id': userId,
+      'barangay': b,
+      'city': m,
+      'province': p,
+      'street': s,
+      'phone': pn,
+    };
+    print(data);
+    try {
+      var res = await Network().authData(data, '/update_address');
+      var body = json.decode(res.body);
+      if (body['success'] == true) {
+        setState(() {
+          _isLoading = false;
+        });
+        Navigator.pop(context);
+        final snackBar = SnackBar(
+          duration: Duration(seconds: 5),
+          content: Container(
+              height: 40.0,
+              child: Center(
+                child: Text(
+                  'User data updated',
+                  style: TextStyle(fontSize: 16.0),
+                ),
+              )),
+          backgroundColor: Colors.greenAccent,
+        );
+        _scaffoldKey.currentState.showSnackBar(snackBar);
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        print(body["message"]);
+        Navigator.pop(context);
+        final snackBar = SnackBar(
+            duration: Duration(seconds: 5),
+            content: Container(
+                height: 40.0,
+                child: Center(
+                  child: Text(
+                    'Unable to update',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                )),
+            backgroundColor: Colors.redAccent);
+        _scaffoldKey.currentState.showSnackBar(snackBar);
+      }
+    } catch (e) {
+      print(e.toString());
+      setState(() {
+        _isLoading = false;
       });
     }
   }
@@ -193,6 +260,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
   updateAddress() async {
     await showDialog<String>(
         context: context,
+        barrierDismissible: false,
         child: new AlertDialog(
           contentPadding: const EdgeInsets.all(16.0),
           content: new SingleChildScrollView(
@@ -217,12 +285,30 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       ),
                     ),
                   ),
+                  Container(
+                    alignment: Alignment.topLeft,
+                    margin: EdgeInsets.only(
+                      top: 10.0,
+                      bottom: 10.0,
+                      left: 0.0,
+                      right: 0.0,
+                    ),
+                    child: Text(
+                      "Please fill up the required fields to be able to generate new QR code. We will not ask again next time.",
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black45,
+                      ),
+                    ),
+                  ),
                   SizedBox(height: 20.0),
                   new TextFormField(
+                    initialValue: p,
                     textInputAction: TextInputAction.next,
-                    autofocus: false,
+                    autofocus: true,
                     onChanged: (value) {
-                      companionProvince = value;
+                      p = value;
                     },
                     validator: (value) {
                       if (value.isEmpty) {
@@ -249,7 +335,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         ),
                         borderRadius: BorderRadius.circular(5.0),
                       ),
-                      hintText: "Enter companion province",
+                      hintText: "Enter your province",
                       // prefixIcon: Icon(
                       //   Icons.perm_identity,
                       //   color: Colors.black,
@@ -262,10 +348,11 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   ),
                   SizedBox(height: 15.0),
                   new TextFormField(
+                    initialValue: m,
                     textInputAction: TextInputAction.next,
                     autofocus: false,
                     onChanged: (value) {
-                      companionCity = value;
+                      m = value;
                     },
                     validator: (value) {
                       if (value.isEmpty) {
@@ -292,7 +379,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         ),
                         borderRadius: BorderRadius.circular(5.0),
                       ),
-                      hintText: "Enter companion municipality",
+                      hintText: "Enter your municipality",
                       // prefixIcon: Icon(
                       //   Icons.perm_identity,
                       //   color: Colors.black,
@@ -305,10 +392,11 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   ),
                   SizedBox(height: 15.0),
                   new TextFormField(
+                    initialValue: b,
                     textInputAction: TextInputAction.next,
                     autofocus: false,
                     onChanged: (value) {
-                      companionBarangay = value;
+                      b = value;
                     },
                     validator: (value) {
                       if (value.isEmpty) {
@@ -335,7 +423,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         ),
                         borderRadius: BorderRadius.circular(5.0),
                       ),
-                      hintText: "Enter companion barangay",
+                      hintText: "Enter your barangay",
                       // prefixIcon: Icon(
                       //   Icons.perm_identity,
                       //   color: Colors.black,
@@ -348,10 +436,11 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   ),
                   SizedBox(height: 15.0),
                   new TextFormField(
+                    initialValue: s,
                     textInputAction: TextInputAction.next,
                     autofocus: false,
                     onChanged: (value) {
-                      companionStreet = value;
+                      s = value;
                     },
                     validator: (value) {
                       if (value.isEmpty) {
@@ -378,7 +467,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         ),
                         borderRadius: BorderRadius.circular(5.0),
                       ),
-                      hintText: "Enter companion house unit or street",
+                      hintText: "Enter your house unit or street",
                       // prefixIcon: Icon(
                       //   Icons.perm_identity,
                       //   color: Colors.black,
@@ -395,7 +484,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                     keyboardType: TextInputType.phone,
                     autofocus: false,
                     onChanged: (value) {
-                      companionPhoneNumber = value;
+                      pn = value;
                     },
                     maxLength: 11,
                     validator: (value) {
@@ -407,7 +496,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
                       return null;
                     },
-                    controller: TextEditingController(text: "09"),
+                    controller: pn == null ? TextEditingController(text: "09") : TextEditingController(text: pn),
                     decoration: InputDecoration(
                       labelText: "Phone Number",
                       labelStyle:
@@ -425,7 +514,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         ),
                         borderRadius: BorderRadius.circular(5.0),
                       ),
-                      hintText: "Enter companion phone number",
+                      hintText: "Enter your phone number",
                       // prefixIcon: Icon(
                       //   Icons.perm_identity,
                       //   color: Colors.black,
@@ -442,11 +531,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
           ),
           actions: <Widget>[
             new FlatButton(
-                child: const Text('Cancel'),
-                onPressed: () {
-                  Navigator.pop(context);
-                }),
-            new FlatButton(
                 child: _isLoading
                     ? SizedBox(
                         child: CircularProgressIndicator(
@@ -460,6 +544,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
                     print("Submit");
+                    submitAddress();
                   }
                 })
           ],
