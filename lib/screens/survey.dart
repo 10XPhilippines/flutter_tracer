@@ -261,294 +261,302 @@ class _SurveyScreenState extends State<SurveyScreen> {
     await showDialog<String>(
         context: context,
         barrierDismissible: false,
-        child: new AlertDialog(
-          contentPadding: const EdgeInsets.all(16.0),
-          content: new SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  new Container(
-                    alignment: Alignment.topLeft,
-                    margin: EdgeInsets.only(
-                      top: 12.0,
-                      bottom: 12.0,
-                      left: 0.0,
-                      right: 0.0,
-                    ),
-                    child: Text(
-                      "Update",
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.topLeft,
-                    margin: EdgeInsets.only(
-                      top: 10.0,
-                      bottom: 10.0,
-                      left: 0.0,
-                      right: 0.0,
-                    ),
-                    child: Text(
-                      "Please fill up the required fields to be able to generate new QR code. We will not ask again next time.",
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black45,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20.0),
-                  new TextFormField(
-                    initialValue: p,
-                    textInputAction: TextInputAction.next,
-                    autofocus: true,
-                    onChanged: (value) {
-                      p = value;
-                    },
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'The field is required.';
-                      } else if (value.length < 4) {
-                        return 'The field must be at least 4 characters.';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: "Province",
-                      labelStyle:
-                          TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
-                      contentPadding: EdgeInsets.all(10.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                          color: Colors.white,
+        builder: (BuildContext context) {
+          return WillPopScope(
+              onWillPop: () async {
+                return false;
+              },
+              child: new AlertDialog(
+                contentPadding: const EdgeInsets.all(16.0),
+                content: new SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        new Container(
+                          alignment: Alignment.topLeft,
+                          margin: EdgeInsets.only(
+                            top: 12.0,
+                            bottom: 12.0,
+                            left: 0.0,
+                            right: 0.0,
+                          ),
+                          child: Text(
+                            "Update",
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black87,
+                            ),
+                          ),
                         ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.white,
+                        Container(
+                          alignment: Alignment.topLeft,
+                          margin: EdgeInsets.only(
+                            top: 10.0,
+                            bottom: 10.0,
+                            left: 0.0,
+                            right: 0.0,
+                          ),
+                          child: Text(
+                            "Please fill up the required fields to be able to generate new QR code. We will not ask again next time.",
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black45,
+                            ),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                      hintText: "Enter your province",
-                      // prefixIcon: Icon(
-                      //   Icons.perm_identity,
-                      //   color: Colors.black,
-                      // ),
-                      hintStyle: TextStyle(
-                        fontSize: 15.0,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15.0),
-                  new TextFormField(
-                    initialValue: m,
-                    textInputAction: TextInputAction.next,
-                    autofocus: false,
-                    onChanged: (value) {
-                      m = value;
-                    },
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'The field is required.';
-                      } else if (value.length < 4) {
-                        return 'The field must be at least 4 characters.';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: "City / Municipality",
-                      labelStyle:
-                          TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
-                      contentPadding: EdgeInsets.all(10.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                          color: Colors.white,
+                        SizedBox(height: 20.0),
+                        new TextFormField(
+                          initialValue: p,
+                          textInputAction: TextInputAction.next,
+                          autofocus: true,
+                          onChanged: (value) {
+                            p = value;
+                          },
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'The field is required.';
+                            } else if (value.length < 4) {
+                              return 'The field must be at least 4 characters.';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: "Province",
+                            labelStyle:
+                                TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                            contentPadding: EdgeInsets.all(10.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            hintText: "Enter your province",
+                            // prefixIcon: Icon(
+                            //   Icons.perm_identity,
+                            //   color: Colors.black,
+                            // ),
+                            hintStyle: TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.black54,
+                            ),
+                          ),
                         ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.white,
+                        SizedBox(height: 15.0),
+                        new TextFormField(
+                          initialValue: m,
+                          textInputAction: TextInputAction.next,
+                          autofocus: false,
+                          onChanged: (value) {
+                            m = value;
+                          },
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'The field is required.';
+                            } else if (value.length < 4) {
+                              return 'The field must be at least 4 characters.';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: "City / Municipality",
+                            labelStyle:
+                                TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                            contentPadding: EdgeInsets.all(10.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            hintText: "Enter your municipality",
+                            // prefixIcon: Icon(
+                            //   Icons.perm_identity,
+                            //   color: Colors.black,
+                            // ),
+                            hintStyle: TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.black54,
+                            ),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                      hintText: "Enter your municipality",
-                      // prefixIcon: Icon(
-                      //   Icons.perm_identity,
-                      //   color: Colors.black,
-                      // ),
-                      hintStyle: TextStyle(
-                        fontSize: 15.0,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15.0),
-                  new TextFormField(
-                    initialValue: b,
-                    textInputAction: TextInputAction.next,
-                    autofocus: false,
-                    onChanged: (value) {
-                      b = value;
-                    },
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'The field is required.';
-                      } else if (value.length < 4) {
-                        return 'The field must be at least 4 characters.';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: "Barangay",
-                      labelStyle:
-                          TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
-                      contentPadding: EdgeInsets.all(10.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                          color: Colors.white,
+                        SizedBox(height: 15.0),
+                        new TextFormField(
+                          initialValue: b,
+                          textInputAction: TextInputAction.next,
+                          autofocus: false,
+                          onChanged: (value) {
+                            b = value;
+                          },
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'The field is required.';
+                            } else if (value.length < 4) {
+                              return 'The field must be at least 4 characters.';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: "Barangay",
+                            labelStyle:
+                                TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                            contentPadding: EdgeInsets.all(10.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            hintText: "Enter your barangay",
+                            // prefixIcon: Icon(
+                            //   Icons.perm_identity,
+                            //   color: Colors.black,
+                            // ),
+                            hintStyle: TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.black54,
+                            ),
+                          ),
                         ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.white,
+                        SizedBox(height: 15.0),
+                        new TextFormField(
+                          initialValue: s,
+                          textInputAction: TextInputAction.next,
+                          autofocus: false,
+                          onChanged: (value) {
+                            s = value;
+                          },
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'The field is required.';
+                            } else if (value.length < 4) {
+                              return 'The field must be at least 4 characters.';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: "House Unit / Street",
+                            labelStyle:
+                                TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                            contentPadding: EdgeInsets.all(10.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            hintText: "Enter your house unit or street",
+                            // prefixIcon: Icon(
+                            //   Icons.perm_identity,
+                            //   color: Colors.black,
+                            // ),
+                            hintStyle: TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.black54,
+                            ),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                      hintText: "Enter your barangay",
-                      // prefixIcon: Icon(
-                      //   Icons.perm_identity,
-                      //   color: Colors.black,
-                      // ),
-                      hintStyle: TextStyle(
-                        fontSize: 15.0,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15.0),
-                  new TextFormField(
-                    initialValue: s,
-                    textInputAction: TextInputAction.next,
-                    autofocus: false,
-                    onChanged: (value) {
-                      s = value;
-                    },
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'The field is required.';
-                      } else if (value.length < 4) {
-                        return 'The field must be at least 4 characters.';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: "House Unit / Street",
-                      labelStyle:
-                          TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
-                      contentPadding: EdgeInsets.all(10.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                      hintText: "Enter your house unit or street",
-                      // prefixIcon: Icon(
-                      //   Icons.perm_identity,
-                      //   color: Colors.black,
-                      // ),
-                      hintStyle: TextStyle(
-                        fontSize: 15.0,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15.0),
-                  new TextFormField(
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.phone,
-                    autofocus: false,
-                    onChanged: (value) {
-                      pn = value;
-                    },
-                    maxLength: 11,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'The field is required.';
-                      } else if (value.length < 11) {
-                        return 'The field must be at least 11 characters.';
-                      }
+                        SizedBox(height: 15.0),
+                        new TextFormField(
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.phone,
+                          autofocus: false,
+                          onChanged: (value) {
+                            pn = value;
+                          },
+                          maxLength: 11,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'The field is required.';
+                            } else if (value.length < 11) {
+                              return 'The field must be at least 11 characters.';
+                            }
 
-                      return null;
-                    },
-                    controller: pn == null ? TextEditingController(text: "09") : TextEditingController(text: pn),
-                    decoration: InputDecoration(
-                      labelText: "Phone Number",
-                      labelStyle:
-                          TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
-                      contentPadding: EdgeInsets.all(10.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                          color: Colors.white,
+                            return null;
+                          },
+                          controller: pn == null
+                              ? TextEditingController(text: "09")
+                              : TextEditingController(text: pn),
+                          decoration: InputDecoration(
+                            labelText: "Phone Number",
+                            labelStyle:
+                                TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                            contentPadding: EdgeInsets.all(10.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            hintText: "Enter your phone number",
+                            // prefixIcon: Icon(
+                            //   Icons.perm_identity,
+                            //   color: Colors.black,
+                            // ),
+                            hintStyle: TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.black54,
+                            ),
+                          ),
                         ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                      hintText: "Enter your phone number",
-                      // prefixIcon: Icon(
-                      //   Icons.perm_identity,
-                      //   color: Colors.black,
-                      // ),
-                      hintStyle: TextStyle(
-                        fontSize: 15.0,
-                        color: Colors.black54,
-                      ),
+                      ],
                     ),
                   ),
+                ),
+                actions: <Widget>[
+                  new FlatButton(
+                      child: _isLoading
+                          ? SizedBox(
+                              child: CircularProgressIndicator(
+                                backgroundColor: Colors.white,
+                                strokeWidth: 2.0,
+                              ),
+                              height: 15.0,
+                              width: 15.0,
+                            )
+                          : Text('Save'),
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          print("Submit");
+                          submitAddress();
+                        }
+                      })
                 ],
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            new FlatButton(
-                child: _isLoading
-                    ? SizedBox(
-                        child: CircularProgressIndicator(
-                          backgroundColor: Colors.white,
-                          strokeWidth: 2.0,
-                        ),
-                        height: 15.0,
-                        width: 15.0,
-                      )
-                    : Text('Save'),
-                onPressed: () {
-                  if (_formKey.currentState.validate()) {
-                    print("Submit");
-                    submitAddress();
-                  }
-                })
-          ],
-        ));
+              ));
+        });
   }
 
   addCompanion() async {

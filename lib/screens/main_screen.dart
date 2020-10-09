@@ -94,13 +94,13 @@ class _MainScreenState extends State<MainScreen> {
                 size: 22.0,
               ),
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return Notifications();
-                    },
-                  ),
-                );
+                // Navigator.of(context).push(
+                //   MaterialPageRoute(
+                //     builder: (BuildContext context) {
+                //       return Notifications();
+                //     },
+                //   ),
+                // );
               },
               tooltip: "Notifications",
             ),

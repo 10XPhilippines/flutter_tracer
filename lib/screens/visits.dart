@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tracer/network_utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class VisitScreen extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class VisitScreen extends StatefulWidget {
 }
 
 class _VisitScreenState extends State<VisitScreen> {
+  Future<void> _launched;
   Uint8List bytes = Uint8List(0);
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = false;
@@ -36,6 +38,14 @@ class _VisitScreenState extends State<VisitScreen> {
     getProfile();
     _checkIfConnected();
     super.initState();
+  }
+
+  Future<void> _makePhoneCall(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   getProfile() async {
@@ -120,6 +130,15 @@ class _VisitScreenState extends State<VisitScreen> {
                     right: 20.0,
                   ),
                   child: ListView(children: <Widget>[
+                    companion.length != 0 ?
+                    Container(
+                      child: Text("List of companions"),
+                      margin: EdgeInsets.only(
+                        left: 20.0,
+                        top: 5.0,
+                        right: 20.0,
+                      ),
+                    ) : Text(""),
                     companion.length != 0
                         ? ListView.builder(
                             shrinkWrap: true,
@@ -129,11 +148,30 @@ class _VisitScreenState extends State<VisitScreen> {
                                 title: Text(
                                   companion[index]["companion_first_name"] +
                                       ' ' +
-                                      companion[index]["companion_last_name"],
+                                      companion[index]["companion_last_name"] +
+                                      ', ' +
+                                      companion[index]
+                                          ["companion_temperature"] +
+                                      "°",
                                   style: TextStyle(
                                     fontSize: 17,
                                     fontWeight: FontWeight.w700,
                                   ),
+                                ),
+                                subtitle: Text(
+                                    '${companion[index]["companion_street"]}, ${companion[index]["companion_barangay"]}, ${companion[index]["companion_municipality"]}, ${companion[index]["companion_province"]}'),
+                                trailing: IconButton(
+                                  icon: Icon(
+                                    Icons.call,
+                                    color: Colors.redAccent,
+                                    size: 20.0,
+                                  ),
+                                  onPressed: () => setState(() {
+                                    _launched = _makePhoneCall(
+                                        'tel:$companion[index]["companion_contact_number"]');
+                                    print(companion[index]
+                                        ["companion_contact_number"]);
+                                  }),
                                 ),
                               );
                             })
