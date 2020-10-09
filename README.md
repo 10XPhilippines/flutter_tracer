@@ -28,10 +28,10 @@
 - [x] <s>User info</s>
 - [x] <s>Show user QR code</s>
 - [X] <s>Change email</s>
+- [X] <s>Update user info</s>
+- [X] <s>Companion feature</s>
 - [ ] Change password
 - [ ] Change display picture
-- [ ] Update user info
-- [ ] Companion feature
 - [ ] User dashboard
 - [ ] Deals preview
 - [ ] Business search
