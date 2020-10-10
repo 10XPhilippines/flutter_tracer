@@ -21,14 +21,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordControl = new TextEditingController();
   final TextEditingController _passwordConfirmControl = new TextEditingController();
   bool _isButtonDisabled = false;
-  var name;
+  var firstName;
+  var lastName;
   var phone;
   var email;
   var password;
   var passwordConfirm;
   bool _isLoading = false;
-  String responseName = "Enter your name";
-  String responsePhone = "Must include country code";
+  String responseFirstName = "Enter your first name";
+  String responseLastName = "Enter your last name";
+  String responsePhone = "Enter your phone number";
   String responseEmail = "Must be a valid email address";
   String responsePassword = "Enter your password";
   String responseConfirm = "Confirm your password";
@@ -56,7 +58,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'email': email,
       'password': password,
       'phone': phone,
-      'name': name,
+      'first_name': firstName,
+      'last_name': lastName,
     };
 
     print(data);
@@ -97,12 +100,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
             });
         setState(() {
           _isButtonDisabled = false;
-          responseName = body["message"]["name"]
+          responseFirstName = body["message"]["first_name"]
               .toString()
               .replaceAll(new RegExp(r'\['), '')
               .replaceAll(new RegExp(r'\]'), '');
-          if (responseName == "null") {
-            responseName = "Enter your name";
+          if (responseFirstName == "null") {
+            responseFirstName = "Enter your first name";
+          }
+          responseLastName = body["message"]["last_name"]
+              .toString()
+              .replaceAll(new RegExp(r'\['), '')
+              .replaceAll(new RegExp(r'\]'), '');
+          if (responseLastName == "null") {
+            responseLastName = "Enter your last name";
           }
           responsePhone = body["message"]["phone"]
               .toString()
@@ -222,7 +232,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   color: Colors.black,
                 ),
                 decoration: InputDecoration(
-                  labelText: "Name",
+                  labelText: "Fisrt Name",
                   labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
                   contentPadding: EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
@@ -237,7 +247,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  hintText: responseName ?? "Enter your name",
+                  hintText: responseFirstName ?? "Enter your first name",
                   // prefixIcon: Icon(
                   //   Icons.perm_identity,
                   //   color: Colors.black,
@@ -250,7 +260,55 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 maxLines: 1,
                 controller: _usernameControl,
                 onChanged: (value) {
-                  name = value;
+                  firstName = value;
+                },
+              ),
+            ),
+          ),
+          SizedBox(height: 10.0),
+          Card(
+            elevation: 3.0,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5.0),
+                ),
+              ),
+              child: TextField(
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.black,
+                ),
+                decoration: InputDecoration(
+                  labelText: "Last Name",
+                  labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                  contentPadding: EdgeInsets.all(10.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      color: Colors.white,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.white,
+                    ),
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  hintText: responseLastName ?? "Enter your last name",
+                  // prefixIcon: Icon(
+                  //   Icons.perm_identity,
+                  //   color: Colors.black,
+                  // ),
+                  hintStyle: TextStyle(
+                    fontSize: 15.0,
+                    color: Colors.black54,
+                  ),
+                ),
+                maxLines: 1,
+                onChanged: (value) {
+                  lastName = value;
                 },
               ),
             ),
@@ -299,7 +357,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 maxLines: 1,
-                controller: TextEditingController(text: "+63"),
+                controller: TextEditingController(text: "09"),
                 onChanged: (value) {
                   phone = value;
                 },

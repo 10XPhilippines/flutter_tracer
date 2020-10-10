@@ -376,7 +376,7 @@ class _VisitScreenState extends State<VisitScreen> {
                         )
                       : Center(
                           child: Padding(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(78),
                             child: ListView(
                               shrinkWrap: true,
                               children: <Widget>[
