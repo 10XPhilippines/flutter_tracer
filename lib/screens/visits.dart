@@ -134,9 +134,10 @@ class _VisitScreenState extends State<VisitScreen> {
                     Container(
                       child: Text("List of companions"),
                       margin: EdgeInsets.only(
-                        left: 20.0,
+                        left: 15.0,
                         top: 5.0,
-                        right: 20.0,
+                        bottom: 5.0,
+                        right: 15.0,
                       ),
                     ) : Text(""),
                     companion.length != 0
@@ -336,8 +337,8 @@ class _VisitScreenState extends State<VisitScreen> {
                     alignment: Alignment.topLeft,
                     margin: EdgeInsets.only(
                       top: 25.0,
-                      left: 12.0,
-                      right: 12.0,
+                      left: 15.0,
+                      right: 15.0,
                     ),
                     child: Text(
                       "List of your visited establishments. Tap to view companion.",
