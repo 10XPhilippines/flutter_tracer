@@ -232,7 +232,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   color: Colors.black,
                 ),
                 decoration: InputDecoration(
-                  labelText: "Fisrt Name",
+                  labelText: "First Name",
                   labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
                   contentPadding: EdgeInsets.all(10.0),
                   border: OutlineInputBorder(
