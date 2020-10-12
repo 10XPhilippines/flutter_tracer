@@ -109,7 +109,7 @@ class _VisitScreenState extends State<VisitScreen> {
       context: context,
       builder: (builder) {
         return new Container(
-          height: 200.0,
+          height: 250.0,
           color: Colors.transparent,
           child: _isLoading2
               ? Center(
