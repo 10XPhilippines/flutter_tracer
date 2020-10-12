@@ -130,18 +130,20 @@ class _VisitScreenState extends State<VisitScreen> {
                     right: 20.0,
                   ),
                   child: ListView(children: <Widget>[
-                    companion.length != 0 ?
-                    Container(
-                      child: Text("List of companions"),
-                      margin: EdgeInsets.only(
-                        left: 15.0,
-                        top: 5.0,
-                        bottom: 5.0,
-                        right: 15.0,
-                      ),
-                    ) : Text(""),
+                    companion.length != 0
+                        ? Container(
+                            child: Text("List of companions"),
+                            margin: EdgeInsets.only(
+                              left: 15.0,
+                              top: 5.0,
+                              bottom: 5.0,
+                              right: 15.0,
+                            ),
+                          )
+                        : Text(""),
                     companion.length != 0
                         ? ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: companion == null ? 0 : companion.length,
                             itemBuilder: (BuildContext context, int index) {
@@ -353,6 +355,7 @@ class _VisitScreenState extends State<VisitScreen> {
                   ),
                   history.length != 0
                       ? ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: history == null ? 0 : history.length,
                           itemBuilder: (BuildContext context, int index) {
