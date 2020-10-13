@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
-import 'package:flutter_tracer/widgets/badge.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
@@ -12,7 +10,10 @@ import 'package:flutter_tracer/network_utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_select/smart_select.dart';
 import 'package:flutter_tracer/screens/visits.dart';
-
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:flutter_tracer/models/province.dart';
+import 'package:flutter_tracer/models/city.dart';
+import 'package:flutter_tracer/models/barangay.dart';
 class SurveyScreen extends StatefulWidget {
   @override
   _SurveyScreenState createState() => _SurveyScreenState();
@@ -22,6 +23,14 @@ class _SurveyScreenState extends State<SurveyScreen> {
   Uint8List bytes = Uint8List(0);
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController p = TextEditingController();
+  final TextEditingController b = TextEditingController();
+  final TextEditingController m = TextEditingController();
+  final TextEditingController s = TextEditingController();
+  final TextEditingController companionProvince = TextEditingController();
+  final TextEditingController companionCity = TextEditingController();
+  final TextEditingController companionStreet = TextEditingController();
+  final TextEditingController companionBarangay = TextEditingController();
   Map profile = {};
   bool _isLoading = false;
   String data;
@@ -40,14 +49,10 @@ class _SurveyScreenState extends State<SurveyScreen> {
   int companionId;
   String companionFirstName;
   String companionLastName;
-  String companionProvince;
-  String companionCity;
-  String companionStreet;
   String companionPhoneNumber;
   String companionTemperature;
-  String companionBarangay;
   String e1, e2, e3, e4, e5, e6, e7, e8;
-  String b, m, p, s, pn;
+  String pn;
   bool hasAddress;
   var rawJson = ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7'];
 
@@ -90,10 +95,10 @@ class _SurveyScreenState extends State<SurveyScreen> {
         body["user"]["phone"] == null) {
       setState(() {
         hasAddress = false;
-        b = body["user"]["barangay"];
-        p = body["user"]["province"];
-        m = body["user"]["city"];
-        s = body["user"]["street"];
+        b.text = body["user"]["barangay"];
+        p.text = body["user"]["province"];
+        m.text = body["user"]["city"];
+        s.text = body["user"]["street"];
         pn = body["user"]["phone"];
       });
     } else {
@@ -113,10 +118,10 @@ class _SurveyScreenState extends State<SurveyScreen> {
     });
     var data = {
       'user_id': userId,
-      'barangay': b,
-      'city': m,
-      'province': p,
-      'street': s,
+      'barangay': b.text,
+      'city': m.text,
+      'province': p.text,
+      'street': s.text,
       'phone': pn,
     };
     print(data);
@@ -176,10 +181,10 @@ class _SurveyScreenState extends State<SurveyScreen> {
       'user_id': userId,
       'companion_first_name': companionFirstName,
       'companion_last_name': companionLastName,
-      'companion_street': companionStreet,
-      'companion_barangay': companionBarangay,
-      'companion_municipality': companionCity,
-      'companion_province': companionProvince,
+      'companion_street': companionStreet.text,
+      'companion_barangay': companionBarangay.text,
+      'companion_municipality': companionCity.text,
+      'companion_province': companionProvince.text,
       'companion_temperature': companionTemperature,
       'companion_contact_number': companionPhoneNumber,
       'companion_code': companionId,
@@ -308,12 +313,51 @@ class _SurveyScreenState extends State<SurveyScreen> {
                           ),
                         ),
                         SizedBox(height: 20.0),
-                        new TextFormField(
-                          initialValue: p,
-                          textInputAction: TextInputAction.next,
-                          autofocus: true,
-                          onChanged: (value) {
-                            p = value;
+                        new TypeAheadFormField(
+                          textFieldConfiguration: TextFieldConfiguration(
+                            decoration: InputDecoration(
+                              labelText: "Province",
+                              labelStyle: TextStyle(
+                                  color: Color.fromRGBO(0, 0, 0, 0.5)),
+                              contentPadding: EdgeInsets.all(10.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                ),
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              hintText: "Enter your province",
+                              // prefixIcon: Icon(
+                              //   Icons.perm_identity,
+                              //   color: Colors.black,
+                              // ),
+                              hintStyle: TextStyle(
+                                fontSize: 15.0,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            controller: p,
+                          ),
+                          suggestionsCallback: (pattern) {
+                            return ProvinceService.getSuggestions(pattern);
+                          },
+                          itemBuilder: (context, suggestion) {
+                            return ListTile(
+                              title: Text(suggestion),
+                            );
+                          },
+                          transitionBuilder:
+                              (context, suggestionsBox, controller) {
+                            return suggestionsBox;
+                          },
+                          onSuggestionSelected: (suggestion) {
+                            this.p.text = suggestion;
                           },
                           validator: (value) {
                             if (value.isEmpty) {
@@ -323,41 +367,54 @@ class _SurveyScreenState extends State<SurveyScreen> {
                             }
                             return null;
                           },
-                          decoration: InputDecoration(
-                            labelText: "Province",
-                            labelStyle:
-                                TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
-                            contentPadding: EdgeInsets.all(10.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                              ),
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            hintText: "Enter your province",
-                            // prefixIcon: Icon(
-                            //   Icons.perm_identity,
-                            //   color: Colors.black,
-                            // ),
-                            hintStyle: TextStyle(
-                              fontSize: 15.0,
-                              color: Colors.black54,
-                            ),
-                          ),
+                          onSaved: (value) => this.p.text = value,
                         ),
                         SizedBox(height: 15.0),
-                        new TextFormField(
-                          initialValue: m,
-                          textInputAction: TextInputAction.next,
-                          autofocus: false,
-                          onChanged: (value) {
-                            m = value;
+                        new TypeAheadFormField(
+                          textFieldConfiguration: TextFieldConfiguration(
+                            decoration: InputDecoration(
+                              labelText: "City / Municipality",
+                              labelStyle: TextStyle(
+                                  color: Color.fromRGBO(0, 0, 0, 0.5)),
+                              contentPadding: EdgeInsets.all(10.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                ),
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              hintText: "Enter your city or municipality",
+                              // prefixIcon: Icon(
+                              //   Icons.perm_identity,
+                              //   color: Colors.black,
+                              // ),
+                              hintStyle: TextStyle(
+                                fontSize: 15.0,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            controller: m,
+                          ),
+                          suggestionsCallback: (pattern) {
+                            return CitiesService.getSuggestions(pattern);
+                          },
+                          itemBuilder: (context, suggestion) {
+                            return ListTile(
+                              title: Text(suggestion),
+                            );
+                          },
+                          transitionBuilder:
+                              (context, suggestionsBox, controller) {
+                            return suggestionsBox;
+                          },
+                          onSuggestionSelected: (suggestion) {
+                            this.m.text = suggestion;
                           },
                           validator: (value) {
                             if (value.isEmpty) {
@@ -367,41 +424,54 @@ class _SurveyScreenState extends State<SurveyScreen> {
                             }
                             return null;
                           },
-                          decoration: InputDecoration(
-                            labelText: "City / Municipality",
-                            labelStyle:
-                                TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
-                            contentPadding: EdgeInsets.all(10.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                              ),
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            hintText: "Enter your municipality",
-                            // prefixIcon: Icon(
-                            //   Icons.perm_identity,
-                            //   color: Colors.black,
-                            // ),
-                            hintStyle: TextStyle(
-                              fontSize: 15.0,
-                              color: Colors.black54,
-                            ),
-                          ),
+                          onSaved: (value) => this.m.text = value,
                         ),
                         SizedBox(height: 15.0),
-                        new TextFormField(
-                          initialValue: b,
-                          textInputAction: TextInputAction.next,
-                          autofocus: false,
-                          onChanged: (value) {
-                            b = value;
+                        new TypeAheadFormField(
+                          textFieldConfiguration: TextFieldConfiguration(
+                            decoration: InputDecoration(
+                              labelText: "Barangay",
+                              labelStyle: TextStyle(
+                                  color: Color.fromRGBO(0, 0, 0, 0.5)),
+                              contentPadding: EdgeInsets.all(10.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                ),
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              hintText: "Enter your barangay",
+                              // prefixIcon: Icon(
+                              //   Icons.perm_identity,
+                              //   color: Colors.black,
+                              // ),
+                              hintStyle: TextStyle(
+                                fontSize: 15.0,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            controller: b,
+                          ),
+                          suggestionsCallback: (pattern) {
+                            return BarangayService.getSuggestions(pattern);
+                          },
+                          itemBuilder: (context, suggestion) {
+                            return ListTile(
+                              title: Text(suggestion),
+                            );
+                          },
+                          transitionBuilder:
+                              (context, suggestionsBox, controller) {
+                            return suggestionsBox;
+                          },
+                          onSuggestionSelected: (suggestion) {
+                            this.b.text = suggestion;
                           },
                           validator: (value) {
                             if (value.isEmpty) {
@@ -411,41 +481,15 @@ class _SurveyScreenState extends State<SurveyScreen> {
                             }
                             return null;
                           },
-                          decoration: InputDecoration(
-                            labelText: "Barangay",
-                            labelStyle:
-                                TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
-                            contentPadding: EdgeInsets.all(10.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                              ),
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            hintText: "Enter your barangay",
-                            // prefixIcon: Icon(
-                            //   Icons.perm_identity,
-                            //   color: Colors.black,
-                            // ),
-                            hintStyle: TextStyle(
-                              fontSize: 15.0,
-                              color: Colors.black54,
-                            ),
-                          ),
+                          onSaved: (value) => this.b.text = value,
                         ),
                         SizedBox(height: 15.0),
                         new TextFormField(
-                          initialValue: s,
+                          initialValue: s.text,
                           textInputAction: TextInputAction.next,
                           autofocus: false,
                           onChanged: (value) {
-                            s = value;
+                            s.text = value;
                           },
                           validator: (value) {
                             if (value.isEmpty) {
@@ -670,173 +714,217 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   ),
                 ),
                 SizedBox(height: 15.0),
-                new TextFormField(
-                  textInputAction: TextInputAction.next,
-                  autofocus: false,
-                  onChanged: (value) {
-                    companionProvince = value;
-                  },
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'The field is required.';
-                    } else if (value.length < 4) {
-                      return 'The field must be at least 4 characters.';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: "Province",
-                    labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
-                    contentPadding: EdgeInsets.all(10.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: Colors.white,
+                new TypeAheadFormField(
+                    textFieldConfiguration: TextFieldConfiguration(
+                      decoration: InputDecoration(
+                        labelText: "Province",
+                        labelStyle:
+                            TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                        contentPadding: EdgeInsets.all(10.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                          ),
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        hintText: "Enter companion province",
+                        // prefixIcon: Icon(
+                        //   Icons.perm_identity,
+                        //   color: Colors.black,
+                        // ),
+                        hintStyle: TextStyle(
+                          fontSize: 15.0,
+                          color: Colors.black54,
+                        ),
                       ),
+                      controller: companionProvince,
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
+                    suggestionsCallback: (pattern) {
+                      return ProvinceService.getSuggestions(pattern);
+                    },
+                    itemBuilder: (context, suggestion) {
+                      return ListTile(
+                        title: Text(suggestion),
+                      );
+                    },
+                    transitionBuilder: (context, suggestionsBox, controller) {
+                      return suggestionsBox;
+                    },
+                    onSuggestionSelected: (suggestion) {
+                      this.companionProvince.text = suggestion;
+                    },
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'The field is required.';
+                      } else if (value.length < 4) {
+                        return 'The field must be at least 4 characters.';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => this.companionProvince.text = value,
+                  ),
+                  SizedBox(height: 15.0),
+                  new TypeAheadFormField(
+                    textFieldConfiguration: TextFieldConfiguration(
+                      decoration: InputDecoration(
+                        labelText: "City / Municipality",
+                        labelStyle:
+                            TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                        contentPadding: EdgeInsets.all(10.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                          ),
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        hintText: "Enter companion city or municipality",
+                        // prefixIcon: Icon(
+                        //   Icons.perm_identity,
+                        //   color: Colors.black,
+                        // ),
+                        hintStyle: TextStyle(
+                          fontSize: 15.0,
+                          color: Colors.black54,
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(5.0),
+                      controller: companionCity,
                     ),
-                    hintText: "Enter companion province",
-                    // prefixIcon: Icon(
-                    //   Icons.perm_identity,
-                    //   color: Colors.black,
-                    // ),
-                    hintStyle: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.black54,
+                    suggestionsCallback: (pattern) {
+                      return CitiesService.getSuggestions(pattern);
+                    },
+                    itemBuilder: (context, suggestion) {
+                      return ListTile(
+                        title: Text(suggestion),
+                      );
+                    },
+                    transitionBuilder: (context, suggestionsBox, controller) {
+                      return suggestionsBox;
+                    },
+                    onSuggestionSelected: (suggestion) {
+                      this.companionCity.text = suggestion;
+                    },
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'The field is required.';
+                      } else if (value.length < 4) {
+                        return 'The field must be at least 4 characters.';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => this.companionCity.text = value,
+                  ),
+                  SizedBox(height: 15.0),
+                  new TypeAheadFormField(
+                    textFieldConfiguration: TextFieldConfiguration(
+                      decoration: InputDecoration(
+                        labelText: "Barangay",
+                        labelStyle:
+                            TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                        contentPadding: EdgeInsets.all(10.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                          ),
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        hintText: "Enter companion barangay",
+                        // prefixIcon: Icon(
+                        //   Icons.perm_identity,
+                        //   color: Colors.black,
+                        // ),
+                        hintStyle: TextStyle(
+                          fontSize: 15.0,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      controller: companionBarangay,
+                    ),
+                    suggestionsCallback: (pattern) {
+                      return BarangayService.getSuggestions(pattern);
+                    },
+                    itemBuilder: (context, suggestion) {
+                      return ListTile(
+                        title: Text(suggestion),
+                      );
+                    },
+                    transitionBuilder: (context, suggestionsBox, controller) {
+                      return suggestionsBox;
+                    },
+                    onSuggestionSelected: (suggestion) {
+                      this.companionBarangay.text = suggestion;
+                    },
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'The field is required.';
+                      } else if (value.length < 4) {
+                        return 'The field must be at least 4 characters.';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => this.companionBarangay.text = value,
+                  ),
+                  SizedBox(height: 15.0),
+                  new TextFormField(
+                    initialValue: companionStreet.text,
+                    textInputAction: TextInputAction.next,
+                    autofocus: false,
+                    onChanged: (value) {
+                      companionStreet.text = value;
+                    },
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'The field is required.';
+                      } else if (value.length < 4) {
+                        return 'The field must be at least 4 characters.';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: "House Unit / Street",
+                      labelStyle:
+                          TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
+                      contentPadding: EdgeInsets.all(10.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                        ),
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      hintText: "Enter companion house unit or street",
+                      // prefixIcon: Icon(
+                      //   Icons.perm_identity,
+                      //   color: Colors.black,
+                      // ),
+                      hintStyle: TextStyle(
+                        fontSize: 15.0,
+                        color: Colors.black54,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 15.0),
-                new TextFormField(
-                  textInputAction: TextInputAction.next,
-                  autofocus: false,
-                  onChanged: (value) {
-                    companionCity = value;
-                  },
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'The field is required.';
-                    } else if (value.length < 4) {
-                      return 'The field must be at least 4 characters.';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: "City / Municipality",
-                    labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
-                    contentPadding: EdgeInsets.all(10.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    hintText: "Enter companion municipality",
-                    // prefixIcon: Icon(
-                    //   Icons.perm_identity,
-                    //   color: Colors.black,
-                    // ),
-                    hintStyle: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 15.0),
-                new TextFormField(
-                  textInputAction: TextInputAction.next,
-                  autofocus: false,
-                  onChanged: (value) {
-                    companionBarangay = value;
-                  },
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'The field is required.';
-                    } else if (value.length < 4) {
-                      return 'The field must be at least 4 characters.';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: "Barangay",
-                    labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
-                    contentPadding: EdgeInsets.all(10.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    hintText: "Enter companion barangay",
-                    // prefixIcon: Icon(
-                    //   Icons.perm_identity,
-                    //   color: Colors.black,
-                    // ),
-                    hintStyle: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 15.0),
-                new TextFormField(
-                  textInputAction: TextInputAction.next,
-                  autofocus: false,
-                  onChanged: (value) {
-                    companionStreet = value;
-                  },
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'The field is required.';
-                    } else if (value.length < 4) {
-                      return 'The field must be at least 4 characters.';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: "House Unit / Street",
-                    labelStyle: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.5)),
-                    contentPadding: EdgeInsets.all(10.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    hintText: "Enter companion house unit or street",
-                    // prefixIcon: Icon(
-                    //   Icons.perm_identity,
-                    //   color: Colors.black,
-                    // ),
-                    hintStyle: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ),
                 SizedBox(height: 15.0),
                 new TextFormField(
                   textInputAction: TextInputAction.next,
@@ -979,6 +1067,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
         elevation: 0.0,
         actions: <Widget>[
           IconButton(
+            iconSize: 21,
             icon: Icon(Icons.history),
             onPressed: () {
               Navigator.of(context).push(

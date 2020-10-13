@@ -36,6 +36,8 @@ dependencies:
   step_progress_indicator: ^0.2.3+6
   percent_indicator: ^2.1.5
   url_launcher: ^5.7.2
+  flutter_typeahead: ^1.8.8
+  qr_flutter: ^3.1.0
 
 dev_dependencies:
   flutter_test:
