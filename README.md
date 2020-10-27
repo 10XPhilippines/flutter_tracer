@@ -19,7 +19,7 @@
 - [x] <s>Latest survey should be fetch by merchants upon scanning user QR</s>
 - [x] <s>Generate QR code based on survey (plus timestamps, with user ID) to be scanned by merchant (questions.dart)</s>
 - [x] <s>Add visited establishments</s>
-- [ ] Social sign in
+- [ ] Change user interface design based on mock-up
 
 ```diff
 ! Low Priority
@@ -30,6 +30,7 @@
 - [X] <s>Change email</s>
 - [X] <s>Update user info</s>
 - [X] <s>Companion feature</s>
+- [ ] Social sign in
 - [ ] Change password
 - [ ] Change display picture
 - [ ] User dashboard
