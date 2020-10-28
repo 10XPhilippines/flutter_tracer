@@ -11,7 +11,7 @@ import 'package:flutter_tracer/screens/profile.dart';
 import 'package:flutter_tracer/screens/search.dart';
 import 'package:flutter_tracer/util/const.dart';
 import 'package:flutter_tracer/widgets/badge.dart';
-import 'package:flutter_tracer/screens/questions.dart';
+import 'package:flutter_tracer/screens/screen_generate.dart';
 import 'package:flutter_tracer/screens/survey.dart';
 import 'package:flutter_tracer/screens/otp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,46 +66,46 @@ class _MainScreenState extends State<MainScreen> {
     return WillPopScope(
       onWillPop: () => Future.value(false),
       child: Scaffold(
-        appBar: AppBar(
-          leading: Builder(builder: (BuildContext context) {
-            return IconButton(
-              icon: Icon(Icons.qr_code, size: 20.0),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return SurveyScreen();
-                    },
-                  ),
-                );
-              },
-            );
-          }),
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          title: Text(
-            Constants.appName,
-          ),
-          elevation: 0.0,
-          actions: <Widget>[
-            IconButton(
-              icon: IconBadge(
-                icon: Icons.notifications,
-                size: 22.0,
-              ),
-              onPressed: () {
-                // Navigator.of(context).push(
-                //   MaterialPageRoute(
-                //     builder: (BuildContext context) {
-                //       return Notifications();
-                //     },
-                //   ),
-                // );
-              },
-              tooltip: "Notifications",
-            ),
-          ],
-        ),
+        // appBar: AppBar(
+        //   leading: Builder(builder: (BuildContext context) {
+        //     return IconButton(
+        //       icon: Icon(Icons.qr_code, size: 20.0),
+        //       onPressed: () {
+        //         Navigator.of(context).push(
+        //           MaterialPageRoute(
+        //             builder: (BuildContext context) {
+        //               return SurveyScreen();
+        //             },
+        //           ),
+        //         );
+        //       },
+        //     );
+        //   }),
+        //   automaticallyImplyLeading: false,
+        //   centerTitle: true,
+        //   title: Text(
+        //     Constants.appName,
+        //   ),
+        //   elevation: 0.0,
+        //   actions: <Widget>[
+        //     IconButton(
+        //       icon: IconBadge(
+        //         icon: Icons.notifications,
+        //         size: 22.0,
+        //       ),
+        //       onPressed: () {
+        //         // Navigator.of(context).push(
+        //         //   MaterialPageRoute(
+        //         //     builder: (BuildContext context) {
+        //         //       return Notifications();
+        //         //     },
+        //         //   ),
+        //         // );
+        //       },
+        //       tooltip: "Notifications",
+        //     ),
+        //   ],
+        // ),
 
         body: PageView(
           physics: NeverScrollableScrollPhysics(),
@@ -113,10 +113,11 @@ class _MainScreenState extends State<MainScreen> {
           onPageChanged: onPageChanged,
           children: <Widget>[
             Profile(),
-            Home(),
+            // Home(),
+            GenerateScreen(),
             FavoriteScreen(),
-            SearchScreen(),
-            CartScreen(),
+            // SearchScreen(),
+            // CartScreen(),
           ],
         ),
 
@@ -126,37 +127,51 @@ class _MainScreenState extends State<MainScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               SizedBox(width: 7),
-              // IconButton(
-              //   icon: Icon(
-              //     Icons.home,
-              //     size: 24.0,
-              //   ),
-              //   color: _page == 0
-              //       ? Theme.of(context).accentColor
-              //       : Theme
-              //       .of(context)
-              //       .textTheme.caption.color,
-              //   onPressed: ()=>_pageController.jumpToPage(0),
-              // ),
+              IconButton(
+                icon: Icon(
+                  Icons.home,
+                  size: 24.0,
+                ),
+                color: _page == 0
+                    ? Theme.of(context).accentColor
+                    : Theme
+                    .of(context)
+                    .textTheme.caption.color,
+                onPressed: ()=>_pageController.jumpToPage(0),
+              ),
+
+              IconButton(
+                icon:Icon(
+                  Icons.qr_code,
+                  size: 24.0,
+                ),
+                color: _page == 1
+                    ? Theme.of(context).accentColor
+                    : Theme
+                    .of(context)
+                    .textTheme.caption.color,
+                onPressed: ()=>_pageController.jumpToPage(1),
+              ),
+
+              IconButton(
+                icon:Icon(
+                  Icons.person,
+                  size: 24.0,
+                ),
+                color: _page == 2
+                    ? Theme.of(context).accentColor
+                    : Theme
+                    .of(context)
+                    .textTheme.caption.color,
+                onPressed: ()=>_pageController.jumpToPage(2),
+              ),
+
 
               // IconButton(
-              //   icon:Icon(
-              //     Icons.favorite,
-              //     size: 24.0,
-              //   ),
-              //   color: _page == 1
-              //       ? Theme.of(context).accentColor
-              //       : Theme
-              //       .of(context)
-              //       .textTheme.caption.color,
-              //   onPressed: ()=>_pageController.jumpToPage(1),
-              // ),
-
-              // IconButton(
               //   icon: Icon(
-              //     Icons.search,
+              //     Icons.person,
               //     size: 24.0,
-              //     color: Theme.of(context).primaryColor,
+              //     color: Theme.of(context).accentColor,
               //   ),
               //   color: _page == 2
               //       ? Theme.of(context).accentColor

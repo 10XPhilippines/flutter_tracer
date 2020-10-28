@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tracer/screens/walkthrough.dart';
 import 'package:flutter_tracer/util/const.dart';
+import 'package:flutter_tracer/screens/join.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -13,14 +14,15 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
 
   startTimeout() {
-    return  Timer(Duration(seconds: 3), changeScreen);
+    return  Timer(Duration(seconds: 5), changeScreen);
   }
 
   changeScreen() async{
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context){
-          return Walkthrough();
+          // return Walkthrough();
+          return JoinApp();
         },
       ),
     );
@@ -51,24 +53,24 @@ class _SplashScreenState extends State<SplashScreen> {
               //   color: Theme.of(context).accentColor,
               // ),
 
-              // Image.asset('assets/logo.png', width: 100,),
+              Image.asset('assets/logo.png', width: 100,),
 
               SizedBox(width: 40.0),
 
-              Container(
-                alignment: Alignment.center,
-                margin: EdgeInsets.only(
-                  top: 15.0,
-                ),
-                child: Text(
-                  "${Constants.appName}",
-                  style: TextStyle(
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.w700,
-                    color: Theme.of(context).accentColor,
-                  ),
-                ),
-              ),
+              // Container(
+              //   alignment: Alignment.center,
+              //   margin: EdgeInsets.only(
+              //     top: 15.0,
+              //   ),
+              //   child: Text(
+              //     "${Constants.appName}",
+              //     style: TextStyle(
+              //       fontSize: 25.0,
+              //       fontWeight: FontWeight.w700,
+              //       color: Theme.of(context).accentColor,
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
